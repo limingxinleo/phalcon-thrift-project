@@ -17,7 +17,9 @@ class Thrift implements ServiceProviderInterface
     {
         $di->setShared('thrift', function () use ($config) {
             $namespaces = $config->thrift->namespaces;
-            return new \App\Thrift($namespaces);
+            $host = $config->thrift->host;
+            $port = $config->thrift->port;
+            return new \App\Thrift($namespaces, $host, $port);
         });
 
 

@@ -287,7 +287,8 @@ return new Config(
             'namespaces' => [
                 'ThriftService',
             ],
-            'host' => env(),
+            'host' => env('APP_DOMAIN', '127.0.0.1'),
+            'port' => 80,
         ],
     ]
 );
