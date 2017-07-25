@@ -9,6 +9,8 @@
 
 namespace App\Logics\Thrift;
 
+use Phalcon\Di\Injectable;
+
 class System extends Injectable implements \ThriftService\SystemIf
 {
     public function version()

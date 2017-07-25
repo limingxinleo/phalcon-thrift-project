@@ -260,6 +260,7 @@ return new Config(
                 'cookies' => App\Services\Cookies::class,
                 'session' => App\Services\Session::class,
                 'modelsManager' => App\Services\ModelsManager::class,
+                'thrift' => App\Services\Thrift::class,
             ],
             'cli' => [
                 'dispatcher' => App\Services\Cli\Dispatcher::class,
