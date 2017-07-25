@@ -21,7 +21,11 @@ class Thrift
 {
     protected $client = [];
 
-    public function __construct($namespaces)
+    public $host;
+
+    public $port;
+
+    public function __construct($namespaces, $host = '127.0.0.1', $port = '80')
     {
         $gen_dir = ROOT_PATH . '/thrift/gen-php';
         $loader = new ThriftClassLoader();
@@ -29,6 +33,10 @@ class Thrift
             $loader->registerDefinition($namespace, $gen_dir);
         }
         $loader->register();
+
+        $this->host = $host;
+
+        $this->port = $port;
     }
 
     public function handle($handlerClass, $processorClass)
@@ -45,22 +53,13 @@ class Thrift
         return true;
     }
 
-    // public function client($host, $port = 80, $uri = '', $scheme = 'http')
-    // {
-    //     $socket = new THttpClient($host, $port, $uri, $scheme);
-    //     $transport = new TBufferedTransport($socket, 1024, 1024);
-    //     $protocol = new TBinaryProtocol($transport);
-    //     $client = new \HelloThrift\HelloServiceClient($protocol);
-    //
-    //     $transport->open();
-    //
-    //     echo $client->sayHello(" World! ");
-    //
-    //     $transport->close();
-    // }
-    //
-    // public function socket()
-    // {
-    //
-    // }
+    public function client($uri = '', $scheme = 'http')
+    {
+        return new THttpClient($this->host, $this->port, $uri, $scheme);
+    }
+
+    public function socket($host = 'localhost', $port = 9090, $persist = false, $debugHandler = null)
+    {
+        return new TSocket($host, $port, $persist, $debugHandler);
+    }
 }

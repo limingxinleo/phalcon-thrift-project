@@ -286,7 +286,8 @@ return new Config(
         'thrift' => [
             'namespaces' => [
                 'ThriftService',
-            ]
+            ],
+            'host' => env(),
         ],
     ]
 );

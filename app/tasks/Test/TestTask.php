@@ -14,7 +14,7 @@ class TestTask extends \Phalcon\Cli\Task
     public function mainAction()
     {
         di('thrift');
-        $socket = new THttpClient('thrift.phalcon.app', 80, '/server');
+        $socket = di('thrift')->client('thrift.phalcon.app', 80, '/server');
         // $socket = new TSocket('localhost', 9090);
 
         $transport = new TBufferedTransport($socket, 1024, 1024);
