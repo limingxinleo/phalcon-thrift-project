@@ -22,4 +22,9 @@ class IndexController extends Controller
         $this->view->version = (new System())->version();
         return $this->view->render('index', 'index');
     }
+
+    public function serverAction()
+    {
+        $this->thrift->handle(new \App\Logics\Thrift\System());
+    }
 }
