@@ -12,7 +12,7 @@ import (
         "os"
         "strconv"
         "strings"
-        "git.apache.org/thrift.git/lib/go/thrift"
+        "thrift"
         "phalcon/thrift/service"
 )
 
@@ -23,6 +23,7 @@ func Usage() {
   fmt.Fprintln(os.Stderr, "\nFunctions:")
   fmt.Fprintln(os.Stderr, "  string version()")
   fmt.Fprintln(os.Stderr, "  string test(string name)")
+  fmt.Fprintln(os.Stderr, "  string count(i16 num)")
   fmt.Fprintln(os.Stderr)
   os.Exit(0)
 }
@@ -133,6 +134,21 @@ func main() {
     argvalue0 := flag.Arg(1)
     value0 := argvalue0
     fmt.Print(client.Test(value0))
+    fmt.Print("\n")
+    break
+  case "count":
+    if flag.NArg() - 1 != 1 {
+      fmt.Fprintln(os.Stderr, "Count requires 1 args")
+      flag.Usage()
+    }
+    tmp0, err9 := (strconv.Atoi(flag.Arg(1)))
+    if err9 != nil {
+      Usage()
+      return
+    }
+    argvalue0 := int16(tmp0)
+    value0 := argvalue0
+    fmt.Print(client.Count(value0))
     fmt.Print("\n")
     break
   case "":

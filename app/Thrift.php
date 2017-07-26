@@ -39,6 +39,16 @@ class Thrift
         $this->port = $port;
     }
 
+    public function setHost($host)
+    {
+        $this->host = $host;
+    }
+
+    public function setPort($port)
+    {
+        $this->port = $port;
+    }
+
     public function handle($handlerClass, $processorClass)
     {
         $processor = new $processorClass(new $handlerClass);
@@ -58,8 +68,8 @@ class Thrift
         return new THttpClient($this->host, $this->port, $uri, $scheme);
     }
 
-    public function socket($host = 'localhost', $port = 9090, $persist = false, $debugHandler = null)
+    public function socket($persist = false, $debugHandler = null)
     {
-        return new TSocket($host, $port, $persist, $debugHandler);
+        return new TSocket($this->host, $this->port, $persist, $debugHandler);
     }
 }

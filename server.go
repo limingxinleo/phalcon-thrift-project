@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"git.apache.org/thrift.git/lib/go/thrift"
+	"thrift"
 	"os"
 	"phalcon/thrift/service"
 )
@@ -15,11 +15,22 @@ type SystemThrift struct {
 }
 
 func (this *SystemThrift) Version() (r string, err error) {
-	return "1.0.0"
+	r = "1.0.0"
+	return
 }
 
 func (this *SystemThrift) Test(name string) (r string, err error) {
-	return "Hello "
+	r = "Hello " + name
+	return
+}
+func (this *SystemThrift) Count(num int16) (r string, err error) {
+	for j := 0; j <= 10000; j++ {
+		for i := 0; i <= 10000; i++ {
+			num++;
+		}
+	}
+	r = "finish"
+	return
 }
 
 func main() {

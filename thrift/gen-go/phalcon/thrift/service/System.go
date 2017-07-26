@@ -6,7 +6,7 @@ package service
 import (
 	"bytes"
 	"fmt"
-	"git.apache.org/thrift.git/lib/go/thrift"
+	"thrift"
 )
 
 // (needed to ensure safety because of naive import list construction.)
@@ -19,6 +19,9 @@ type System interface {
   // Parameters:
   //  - Name
   Test(name string) (r string, err error)
+  // Parameters:
+  //  - Num
+  Count(num int16) (r string, err error)
 }
 
 type SystemClient struct {
@@ -196,6 +199,82 @@ func (p *SystemClient) recvTest() (value string, err error) {
   return
 }
 
+// Parameters:
+//  - Num
+func (p *SystemClient) Count(num int16) (r string, err error) {
+  if err = p.sendCount(num); err != nil { return }
+  return p.recvCount()
+}
+
+func (p *SystemClient) sendCount(num int16)(err error) {
+  oprot := p.OutputProtocol
+  if oprot == nil {
+    oprot = p.ProtocolFactory.GetProtocol(p.Transport)
+    p.OutputProtocol = oprot
+  }
+  p.SeqId++
+  if err = oprot.WriteMessageBegin("count", thrift.CALL, p.SeqId); err != nil {
+      return
+  }
+  args := SystemCountArgs{
+  Num : num,
+  }
+  if err = args.Write(oprot); err != nil {
+      return
+  }
+  if err = oprot.WriteMessageEnd(); err != nil {
+      return
+  }
+  return oprot.Flush()
+}
+
+
+func (p *SystemClient) recvCount() (value string, err error) {
+  iprot := p.InputProtocol
+  if iprot == nil {
+    iprot = p.ProtocolFactory.GetProtocol(p.Transport)
+    p.InputProtocol = iprot
+  }
+  method, mTypeId, seqId, err := iprot.ReadMessageBegin()
+  if err != nil {
+    return
+  }
+  if method != "count" {
+    err = thrift.NewTApplicationException(thrift.WRONG_METHOD_NAME, "count failed: wrong method name")
+    return
+  }
+  if p.SeqId != seqId {
+    err = thrift.NewTApplicationException(thrift.BAD_SEQUENCE_ID, "count failed: out of sequence response")
+    return
+  }
+  if mTypeId == thrift.EXCEPTION {
+    error4 := thrift.NewTApplicationException(thrift.UNKNOWN_APPLICATION_EXCEPTION, "Unknown Exception")
+    var error5 error
+    error5, err = error4.Read(iprot)
+    if err != nil {
+      return
+    }
+    if err = iprot.ReadMessageEnd(); err != nil {
+      return
+    }
+    err = error5
+    return
+  }
+  if mTypeId != thrift.REPLY {
+    err = thrift.NewTApplicationException(thrift.INVALID_MESSAGE_TYPE_EXCEPTION, "count failed: invalid message type")
+    return
+  }
+  result := SystemCountResult{}
+  if err = result.Read(iprot); err != nil {
+    return
+  }
+  if err = iprot.ReadMessageEnd(); err != nil {
+    return
+  }
+  value = result.GetSuccess()
+  return
+}
+
 
 type SystemProcessor struct {
   processorMap map[string]thrift.TProcessorFunction
@@ -217,10 +296,11 @@ func (p *SystemProcessor) ProcessorMap() map[string]thrift.TProcessorFunction {
 
 func NewSystemProcessor(handler System) *SystemProcessor {
 
-  self4 := &SystemProcessor{handler:handler, processorMap:make(map[string]thrift.TProcessorFunction)}
-  self4.processorMap["version"] = &systemProcessorVersion{handler:handler}
-  self4.processorMap["test"] = &systemProcessorTest{handler:handler}
-return self4
+  self6 := &SystemProcessor{handler:handler, processorMap:make(map[string]thrift.TProcessorFunction)}
+  self6.processorMap["version"] = &systemProcessorVersion{handler:handler}
+  self6.processorMap["test"] = &systemProcessorTest{handler:handler}
+  self6.processorMap["count"] = &systemProcessorCount{handler:handler}
+return self6
 }
 
 func (p *SystemProcessor) Process(iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
@@ -231,12 +311,12 @@ func (p *SystemProcessor) Process(iprot, oprot thrift.TProtocol) (success bool, 
   }
   iprot.Skip(thrift.STRUCT)
   iprot.ReadMessageEnd()
-  x5 := thrift.NewTApplicationException(thrift.UNKNOWN_METHOD, "Unknown function " + name)
+  x7 := thrift.NewTApplicationException(thrift.UNKNOWN_METHOD, "Unknown function " + name)
   oprot.WriteMessageBegin(name, thrift.EXCEPTION, seqId)
-  x5.Write(oprot)
+  x7.Write(oprot)
   oprot.WriteMessageEnd()
   oprot.Flush()
-  return false, x5
+  return false, x7
 
 }
 
@@ -319,6 +399,54 @@ var retval string
     result.Success = &retval
 }
   if err2 = oprot.WriteMessageBegin("test", thrift.REPLY, seqId); err2 != nil {
+    err = err2
+  }
+  if err2 = result.Write(oprot); err == nil && err2 != nil {
+    err = err2
+  }
+  if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+    err = err2
+  }
+  if err2 = oprot.Flush(); err == nil && err2 != nil {
+    err = err2
+  }
+  if err != nil {
+    return
+  }
+  return true, err
+}
+
+type systemProcessorCount struct {
+  handler System
+}
+
+func (p *systemProcessorCount) Process(seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+  args := SystemCountArgs{}
+  if err = args.Read(iprot); err != nil {
+    iprot.ReadMessageEnd()
+    x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+    oprot.WriteMessageBegin("count", thrift.EXCEPTION, seqId)
+    x.Write(oprot)
+    oprot.WriteMessageEnd()
+    oprot.Flush()
+    return false, err
+  }
+
+  iprot.ReadMessageEnd()
+  result := SystemCountResult{}
+var retval string
+  var err2 error
+  if retval, err2 = p.handler.Count(args.Num); err2 != nil {
+    x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing count: " + err2.Error())
+    oprot.WriteMessageBegin("count", thrift.EXCEPTION, seqId)
+    x.Write(oprot)
+    oprot.WriteMessageEnd()
+    oprot.Flush()
+    return true, err2
+  } else {
+    result.Success = &retval
+}
+  if err2 = oprot.WriteMessageBegin("count", thrift.REPLY, seqId); err2 != nil {
     err = err2
   }
   if err2 = result.Write(oprot); err == nil && err2 != nil {
@@ -661,6 +789,185 @@ func (p *SystemTestResult) String() string {
     return "<nil>"
   }
   return fmt.Sprintf("SystemTestResult(%+v)", *p)
+}
+
+// Attributes:
+//  - Num
+type SystemCountArgs struct {
+  Num int16 `thrift:"num,1" db:"num" json:"num"`
+}
+
+func NewSystemCountArgs() *SystemCountArgs {
+  return &SystemCountArgs{}
+}
+
+
+func (p *SystemCountArgs) GetNum() int16 {
+  return p.Num
+}
+func (p *SystemCountArgs) Read(iprot thrift.TProtocol) error {
+  if _, err := iprot.ReadStructBegin(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+  }
+
+
+  for {
+    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
+    if err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+    }
+    if fieldTypeId == thrift.STOP { break; }
+    switch fieldId {
+    case 1:
+      if err := p.ReadField1(iprot); err != nil {
+        return err
+      }
+    default:
+      if err := iprot.Skip(fieldTypeId); err != nil {
+        return err
+      }
+    }
+    if err := iprot.ReadFieldEnd(); err != nil {
+      return err
+    }
+  }
+  if err := iprot.ReadStructEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+  }
+  return nil
+}
+
+func (p *SystemCountArgs)  ReadField1(iprot thrift.TProtocol) error {
+  if v, err := iprot.ReadI16(); err != nil {
+  return thrift.PrependError("error reading field 1: ", err)
+} else {
+  p.Num = v
+}
+  return nil
+}
+
+func (p *SystemCountArgs) Write(oprot thrift.TProtocol) error {
+  if err := oprot.WriteStructBegin("count_args"); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
+  if p != nil {
+    if err := p.writeField1(oprot); err != nil { return err }
+  }
+  if err := oprot.WriteFieldStop(); err != nil {
+    return thrift.PrependError("write field stop error: ", err) }
+  if err := oprot.WriteStructEnd(); err != nil {
+    return thrift.PrependError("write struct stop error: ", err) }
+  return nil
+}
+
+func (p *SystemCountArgs) writeField1(oprot thrift.TProtocol) (err error) {
+  if err := oprot.WriteFieldBegin("num", thrift.I16, 1); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:num: ", p), err) }
+  if err := oprot.WriteI16(int16(p.Num)); err != nil {
+  return thrift.PrependError(fmt.Sprintf("%T.num (1) field write error: ", p), err) }
+  if err := oprot.WriteFieldEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field end error 1:num: ", p), err) }
+  return err
+}
+
+func (p *SystemCountArgs) String() string {
+  if p == nil {
+    return "<nil>"
+  }
+  return fmt.Sprintf("SystemCountArgs(%+v)", *p)
+}
+
+// Attributes:
+//  - Success
+type SystemCountResult struct {
+  Success *string `thrift:"success,0" db:"success" json:"success,omitempty"`
+}
+
+func NewSystemCountResult() *SystemCountResult {
+  return &SystemCountResult{}
+}
+
+var SystemCountResult_Success_DEFAULT string
+func (p *SystemCountResult) GetSuccess() string {
+  if !p.IsSetSuccess() {
+    return SystemCountResult_Success_DEFAULT
+  }
+return *p.Success
+}
+func (p *SystemCountResult) IsSetSuccess() bool {
+  return p.Success != nil
+}
+
+func (p *SystemCountResult) Read(iprot thrift.TProtocol) error {
+  if _, err := iprot.ReadStructBegin(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+  }
+
+
+  for {
+    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
+    if err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+    }
+    if fieldTypeId == thrift.STOP { break; }
+    switch fieldId {
+    case 0:
+      if err := p.ReadField0(iprot); err != nil {
+        return err
+      }
+    default:
+      if err := iprot.Skip(fieldTypeId); err != nil {
+        return err
+      }
+    }
+    if err := iprot.ReadFieldEnd(); err != nil {
+      return err
+    }
+  }
+  if err := iprot.ReadStructEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+  }
+  return nil
+}
+
+func (p *SystemCountResult)  ReadField0(iprot thrift.TProtocol) error {
+  if v, err := iprot.ReadString(); err != nil {
+  return thrift.PrependError("error reading field 0: ", err)
+} else {
+  p.Success = &v
+}
+  return nil
+}
+
+func (p *SystemCountResult) Write(oprot thrift.TProtocol) error {
+  if err := oprot.WriteStructBegin("count_result"); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
+  if p != nil {
+    if err := p.writeField0(oprot); err != nil { return err }
+  }
+  if err := oprot.WriteFieldStop(); err != nil {
+    return thrift.PrependError("write field stop error: ", err) }
+  if err := oprot.WriteStructEnd(); err != nil {
+    return thrift.PrependError("write struct stop error: ", err) }
+  return nil
+}
+
+func (p *SystemCountResult) writeField0(oprot thrift.TProtocol) (err error) {
+  if p.IsSetSuccess() {
+    if err := oprot.WriteFieldBegin("success", thrift.STRING, 0); err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T write field begin error 0:success: ", p), err) }
+    if err := oprot.WriteString(string(*p.Success)); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T.success (0) field write error: ", p), err) }
+    if err := oprot.WriteFieldEnd(); err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T write field end error 0:success: ", p), err) }
+  }
+  return err
+}
+
+func (p *SystemCountResult) String() string {
+  if p == nil {
+    return "<nil>"
+  }
+  return fmt.Sprintf("SystemCountResult(%+v)", *p)
 }
 
 

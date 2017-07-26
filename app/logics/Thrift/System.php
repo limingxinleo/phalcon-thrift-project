@@ -23,4 +23,15 @@ class System extends Injectable implements \ThriftService\SystemIf
         return "Hello " . $name;
     }
 
+    public function count($num)
+    {
+        for ($i = 0; $i < 10000; $i++) {
+            for ($j = 0; $j < 10000; $j++) {
+                $num++;
+            }
+        }
+        return 'finish';
+    }
+
+
 }

@@ -26,6 +26,11 @@ interface SystemIf {
    * @return string
    */
   public function test($name);
+  /**
+   * @param int $num
+   * @return string
+   */
+  public function count($num);
 }
 
 
@@ -139,6 +144,57 @@ class SystemClient implements \ThriftService\SystemIf {
       return $result->success;
     }
     throw new \Exception("test failed: unknown result");
+  }
+
+  public function count($num)
+  {
+    $this->send_count($num);
+    return $this->recv_count();
+  }
+
+  public function send_count($num)
+  {
+    $args = new \ThriftService\System_count_args();
+    $args->num = $num;
+    $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($this->output_, 'count', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
+    }
+    else
+    {
+      $this->output_->writeMessageBegin('count', TMessageType::CALL, $this->seqid_);
+      $args->write($this->output_);
+      $this->output_->writeMessageEnd();
+      $this->output_->getTransport()->flush();
+    }
+  }
+
+  public function recv_count()
+  {
+    $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\ThriftService\System_count_result', $this->input_->isStrictRead());
+    else
+    {
+      $rseqid = 0;
+      $fname = null;
+      $mtype = 0;
+
+      $this->input_->readMessageBegin($fname, $mtype, $rseqid);
+      if ($mtype == TMessageType::EXCEPTION) {
+        $x = new TApplicationException();
+        $x->read($this->input_);
+        $this->input_->readMessageEnd();
+        throw $x;
+      }
+      $result = new \ThriftService\System_count_result();
+      $result->read($this->input_);
+      $this->input_->readMessageEnd();
+    }
+    if ($result->success !== null) {
+      return $result->success;
+    }
+    throw new \Exception("count failed: unknown result");
   }
 
 }
@@ -421,6 +477,156 @@ class System_test_result {
 
 }
 
+class System_count_args {
+  static $_TSPEC;
+
+  /**
+   * @var int
+   */
+  public $num = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'num',
+          'type' => TType::I16,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['num'])) {
+        $this->num = $vals['num'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'System_count_args';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::I16) {
+            $xfer += $input->readI16($this->num);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('System_count_args');
+    if ($this->num !== null) {
+      $xfer += $output->writeFieldBegin('num', TType::I16, 1);
+      $xfer += $output->writeI16($this->num);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class System_count_result {
+  static $_TSPEC;
+
+  /**
+   * @var string
+   */
+  public $success = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        0 => array(
+          'var' => 'success',
+          'type' => TType::STRING,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['success'])) {
+        $this->success = $vals['success'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'System_count_result';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 0:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->success);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('System_count_result');
+    if ($this->success !== null) {
+      $xfer += $output->writeFieldBegin('success', TType::STRING, 0);
+      $xfer += $output->writeString($this->success);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
 class SystemProcessor {
   protected $handler_ = null;
   public function __construct($handler) {
@@ -481,6 +687,25 @@ class SystemProcessor {
     else
     {
       $output->writeMessageBegin('test', TMessageType::REPLY, $seqid);
+      $result->write($output);
+      $output->writeMessageEnd();
+      $output->getTransport()->flush();
+    }
+  }
+  protected function process_count($seqid, $input, $output) {
+    $args = new \ThriftService\System_count_args();
+    $args->read($input);
+    $input->readMessageEnd();
+    $result = new \ThriftService\System_count_result();
+    $result->success = $this->handler_->count($args->num);
+    $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($output, 'count', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
+    }
+    else
+    {
+      $output->writeMessageBegin('count', TMessageType::REPLY, $seqid);
       $result->write($output);
       $output->writeMessageEnd();
       $output->getTransport()->flush();
