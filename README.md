@@ -200,3 +200,6 @@ crontab -e
 * app下的一级目录为小写，需要注册命名空间。二级目录为首字母大写，不需要注册命名空间。但命名空间必须与其对应。
 * 因为phalcon扩展框架暂不支持mongoDB扩展，所以如果想使用mongoCollection，需要require phalcon/incubator。
 * 路由匹配规则：倘若有两个路由都符合规则，会有限匹配后面的路由。故，隐性路由要写在显性路由前面。
+
+
+* 使用Composer安装Thrift扩展后，把go的扩展包拷贝到GOPATH中。编译生成Go服务之后，全局替换 git.apache.org/thrift.git/lib/go/thrift 为 thrift
