@@ -13,7 +13,7 @@ import (
         "strconv"
         "strings"
         "git.apache.org/thrift.git/lib/go/thrift"
-        "system"
+        "phalcon/thrift/service"
 )
 
 
@@ -110,7 +110,7 @@ func main() {
     Usage()
     os.Exit(1)
   }
-  client := system.NewSystemClientFactory(trans, protocolFactory)
+  client := service.NewSystemClientFactory(trans, protocolFactory)
   if err := trans.Open(); err != nil {
     fmt.Fprintln(os.Stderr, "Error opening socket to ", host, ":", port, " ", err)
     os.Exit(1)
