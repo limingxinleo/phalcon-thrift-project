@@ -22,6 +22,9 @@ type System interface {
   // Parameters:
   //  - Num
   Count(num int16) (r string, err error)
+  // Parameters:
+  //  - Data
+  ListOutput(data map[int32]map[string]string) (r map[int32]map[string]string, err error)
 }
 
 type SystemClient struct {
@@ -275,6 +278,82 @@ func (p *SystemClient) recvCount() (value string, err error) {
   return
 }
 
+// Parameters:
+//  - Data
+func (p *SystemClient) ListOutput(data map[int32]map[string]string) (r map[int32]map[string]string, err error) {
+  if err = p.sendListOutput(data); err != nil { return }
+  return p.recvListOutput()
+}
+
+func (p *SystemClient) sendListOutput(data map[int32]map[string]string)(err error) {
+  oprot := p.OutputProtocol
+  if oprot == nil {
+    oprot = p.ProtocolFactory.GetProtocol(p.Transport)
+    p.OutputProtocol = oprot
+  }
+  p.SeqId++
+  if err = oprot.WriteMessageBegin("listOutput", thrift.CALL, p.SeqId); err != nil {
+      return
+  }
+  args := SystemListOutputArgs{
+  Data : data,
+  }
+  if err = args.Write(oprot); err != nil {
+      return
+  }
+  if err = oprot.WriteMessageEnd(); err != nil {
+      return
+  }
+  return oprot.Flush()
+}
+
+
+func (p *SystemClient) recvListOutput() (value map[int32]map[string]string, err error) {
+  iprot := p.InputProtocol
+  if iprot == nil {
+    iprot = p.ProtocolFactory.GetProtocol(p.Transport)
+    p.InputProtocol = iprot
+  }
+  method, mTypeId, seqId, err := iprot.ReadMessageBegin()
+  if err != nil {
+    return
+  }
+  if method != "listOutput" {
+    err = thrift.NewTApplicationException(thrift.WRONG_METHOD_NAME, "listOutput failed: wrong method name")
+    return
+  }
+  if p.SeqId != seqId {
+    err = thrift.NewTApplicationException(thrift.BAD_SEQUENCE_ID, "listOutput failed: out of sequence response")
+    return
+  }
+  if mTypeId == thrift.EXCEPTION {
+    error6 := thrift.NewTApplicationException(thrift.UNKNOWN_APPLICATION_EXCEPTION, "Unknown Exception")
+    var error7 error
+    error7, err = error6.Read(iprot)
+    if err != nil {
+      return
+    }
+    if err = iprot.ReadMessageEnd(); err != nil {
+      return
+    }
+    err = error7
+    return
+  }
+  if mTypeId != thrift.REPLY {
+    err = thrift.NewTApplicationException(thrift.INVALID_MESSAGE_TYPE_EXCEPTION, "listOutput failed: invalid message type")
+    return
+  }
+  result := SystemListOutputResult{}
+  if err = result.Read(iprot); err != nil {
+    return
+  }
+  if err = iprot.ReadMessageEnd(); err != nil {
+    return
+  }
+  value = result.GetSuccess()
+  return
+}
+
 
 type SystemProcessor struct {
   processorMap map[string]thrift.TProcessorFunction
@@ -296,11 +375,12 @@ func (p *SystemProcessor) ProcessorMap() map[string]thrift.TProcessorFunction {
 
 func NewSystemProcessor(handler System) *SystemProcessor {
 
-  self6 := &SystemProcessor{handler:handler, processorMap:make(map[string]thrift.TProcessorFunction)}
-  self6.processorMap["version"] = &systemProcessorVersion{handler:handler}
-  self6.processorMap["test"] = &systemProcessorTest{handler:handler}
-  self6.processorMap["count"] = &systemProcessorCount{handler:handler}
-return self6
+  self8 := &SystemProcessor{handler:handler, processorMap:make(map[string]thrift.TProcessorFunction)}
+  self8.processorMap["version"] = &systemProcessorVersion{handler:handler}
+  self8.processorMap["test"] = &systemProcessorTest{handler:handler}
+  self8.processorMap["count"] = &systemProcessorCount{handler:handler}
+  self8.processorMap["listOutput"] = &systemProcessorListOutput{handler:handler}
+return self8
 }
 
 func (p *SystemProcessor) Process(iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
@@ -311,12 +391,12 @@ func (p *SystemProcessor) Process(iprot, oprot thrift.TProtocol) (success bool, 
   }
   iprot.Skip(thrift.STRUCT)
   iprot.ReadMessageEnd()
-  x7 := thrift.NewTApplicationException(thrift.UNKNOWN_METHOD, "Unknown function " + name)
+  x9 := thrift.NewTApplicationException(thrift.UNKNOWN_METHOD, "Unknown function " + name)
   oprot.WriteMessageBegin(name, thrift.EXCEPTION, seqId)
-  x7.Write(oprot)
+  x9.Write(oprot)
   oprot.WriteMessageEnd()
   oprot.Flush()
-  return false, x7
+  return false, x9
 
 }
 
@@ -447,6 +527,54 @@ var retval string
     result.Success = &retval
 }
   if err2 = oprot.WriteMessageBegin("count", thrift.REPLY, seqId); err2 != nil {
+    err = err2
+  }
+  if err2 = result.Write(oprot); err == nil && err2 != nil {
+    err = err2
+  }
+  if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+    err = err2
+  }
+  if err2 = oprot.Flush(); err == nil && err2 != nil {
+    err = err2
+  }
+  if err != nil {
+    return
+  }
+  return true, err
+}
+
+type systemProcessorListOutput struct {
+  handler System
+}
+
+func (p *systemProcessorListOutput) Process(seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+  args := SystemListOutputArgs{}
+  if err = args.Read(iprot); err != nil {
+    iprot.ReadMessageEnd()
+    x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+    oprot.WriteMessageBegin("listOutput", thrift.EXCEPTION, seqId)
+    x.Write(oprot)
+    oprot.WriteMessageEnd()
+    oprot.Flush()
+    return false, err
+  }
+
+  iprot.ReadMessageEnd()
+  result := SystemListOutputResult{}
+var retval map[int32]map[string]string
+  var err2 error
+  if retval, err2 = p.handler.ListOutput(args.Data); err2 != nil {
+    x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing listOutput: " + err2.Error())
+    oprot.WriteMessageBegin("listOutput", thrift.EXCEPTION, seqId)
+    x.Write(oprot)
+    oprot.WriteMessageEnd()
+    oprot.Flush()
+    return true, err2
+  } else {
+    result.Success = retval
+}
+  if err2 = oprot.WriteMessageBegin("listOutput", thrift.REPLY, seqId); err2 != nil {
     err = err2
   }
   if err2 = result.Write(oprot); err == nil && err2 != nil {
@@ -968,6 +1096,297 @@ func (p *SystemCountResult) String() string {
     return "<nil>"
   }
   return fmt.Sprintf("SystemCountResult(%+v)", *p)
+}
+
+// Attributes:
+//  - Data
+type SystemListOutputArgs struct {
+  Data map[int32]map[string]string `thrift:"data,1" db:"data" json:"data"`
+}
+
+func NewSystemListOutputArgs() *SystemListOutputArgs {
+  return &SystemListOutputArgs{}
+}
+
+
+func (p *SystemListOutputArgs) GetData() map[int32]map[string]string {
+  return p.Data
+}
+func (p *SystemListOutputArgs) Read(iprot thrift.TProtocol) error {
+  if _, err := iprot.ReadStructBegin(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+  }
+
+
+  for {
+    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
+    if err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+    }
+    if fieldTypeId == thrift.STOP { break; }
+    switch fieldId {
+    case 1:
+      if err := p.ReadField1(iprot); err != nil {
+        return err
+      }
+    default:
+      if err := iprot.Skip(fieldTypeId); err != nil {
+        return err
+      }
+    }
+    if err := iprot.ReadFieldEnd(); err != nil {
+      return err
+    }
+  }
+  if err := iprot.ReadStructEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+  }
+  return nil
+}
+
+func (p *SystemListOutputArgs)  ReadField1(iprot thrift.TProtocol) error {
+  _, _, size, err := iprot.ReadMapBegin()
+  if err != nil {
+    return thrift.PrependError("error reading map begin: ", err)
+  }
+  tMap := make(map[int32]map[string]string, size)
+  p.Data =  tMap
+  for i := 0; i < size; i ++ {
+var _key10 int32
+    if v, err := iprot.ReadI32(); err != nil {
+    return thrift.PrependError("error reading field 0: ", err)
+} else {
+    _key10 = v
+}
+    _, _, size, err := iprot.ReadMapBegin()
+    if err != nil {
+      return thrift.PrependError("error reading map begin: ", err)
+    }
+    tMap := make(map[string]string, size)
+    _val11 :=  tMap
+    for i := 0; i < size; i ++ {
+var _key12 string
+      if v, err := iprot.ReadString(); err != nil {
+      return thrift.PrependError("error reading field 0: ", err)
+} else {
+      _key12 = v
+}
+var _val13 string
+      if v, err := iprot.ReadString(); err != nil {
+      return thrift.PrependError("error reading field 0: ", err)
+} else {
+      _val13 = v
+}
+      _val11[_key12] = _val13
+    }
+    if err := iprot.ReadMapEnd(); err != nil {
+      return thrift.PrependError("error reading map end: ", err)
+    }
+    p.Data[_key10] = _val11
+  }
+  if err := iprot.ReadMapEnd(); err != nil {
+    return thrift.PrependError("error reading map end: ", err)
+  }
+  return nil
+}
+
+func (p *SystemListOutputArgs) Write(oprot thrift.TProtocol) error {
+  if err := oprot.WriteStructBegin("listOutput_args"); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
+  if p != nil {
+    if err := p.writeField1(oprot); err != nil { return err }
+  }
+  if err := oprot.WriteFieldStop(); err != nil {
+    return thrift.PrependError("write field stop error: ", err) }
+  if err := oprot.WriteStructEnd(); err != nil {
+    return thrift.PrependError("write struct stop error: ", err) }
+  return nil
+}
+
+func (p *SystemListOutputArgs) writeField1(oprot thrift.TProtocol) (err error) {
+  if err := oprot.WriteFieldBegin("data", thrift.MAP, 1); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:data: ", p), err) }
+  if err := oprot.WriteMapBegin(thrift.I32, thrift.MAP, len(p.Data)); err != nil {
+    return thrift.PrependError("error writing map begin: ", err)
+  }
+  for k, v := range p.Data {
+    if err := oprot.WriteI32(int32(k)); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T. (0) field write error: ", p), err) }
+    if err := oprot.WriteMapBegin(thrift.STRING, thrift.STRING, len(v)); err != nil {
+      return thrift.PrependError("error writing map begin: ", err)
+    }
+    for k, v := range v {
+      if err := oprot.WriteString(string(k)); err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T. (0) field write error: ", p), err) }
+      if err := oprot.WriteString(string(v)); err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T. (0) field write error: ", p), err) }
+    }
+    if err := oprot.WriteMapEnd(); err != nil {
+      return thrift.PrependError("error writing map end: ", err)
+    }
+  }
+  if err := oprot.WriteMapEnd(); err != nil {
+    return thrift.PrependError("error writing map end: ", err)
+  }
+  if err := oprot.WriteFieldEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field end error 1:data: ", p), err) }
+  return err
+}
+
+func (p *SystemListOutputArgs) String() string {
+  if p == nil {
+    return "<nil>"
+  }
+  return fmt.Sprintf("SystemListOutputArgs(%+v)", *p)
+}
+
+// Attributes:
+//  - Success
+type SystemListOutputResult struct {
+  Success map[int32]map[string]string `thrift:"success,0" db:"success" json:"success,omitempty"`
+}
+
+func NewSystemListOutputResult() *SystemListOutputResult {
+  return &SystemListOutputResult{}
+}
+
+var SystemListOutputResult_Success_DEFAULT map[int32]map[string]string
+
+func (p *SystemListOutputResult) GetSuccess() map[int32]map[string]string {
+  return p.Success
+}
+func (p *SystemListOutputResult) IsSetSuccess() bool {
+  return p.Success != nil
+}
+
+func (p *SystemListOutputResult) Read(iprot thrift.TProtocol) error {
+  if _, err := iprot.ReadStructBegin(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+  }
+
+
+  for {
+    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
+    if err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+    }
+    if fieldTypeId == thrift.STOP { break; }
+    switch fieldId {
+    case 0:
+      if err := p.ReadField0(iprot); err != nil {
+        return err
+      }
+    default:
+      if err := iprot.Skip(fieldTypeId); err != nil {
+        return err
+      }
+    }
+    if err := iprot.ReadFieldEnd(); err != nil {
+      return err
+    }
+  }
+  if err := iprot.ReadStructEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+  }
+  return nil
+}
+
+func (p *SystemListOutputResult)  ReadField0(iprot thrift.TProtocol) error {
+  _, _, size, err := iprot.ReadMapBegin()
+  if err != nil {
+    return thrift.PrependError("error reading map begin: ", err)
+  }
+  tMap := make(map[int32]map[string]string, size)
+  p.Success =  tMap
+  for i := 0; i < size; i ++ {
+var _key14 int32
+    if v, err := iprot.ReadI32(); err != nil {
+    return thrift.PrependError("error reading field 0: ", err)
+} else {
+    _key14 = v
+}
+    _, _, size, err := iprot.ReadMapBegin()
+    if err != nil {
+      return thrift.PrependError("error reading map begin: ", err)
+    }
+    tMap := make(map[string]string, size)
+    _val15 :=  tMap
+    for i := 0; i < size; i ++ {
+var _key16 string
+      if v, err := iprot.ReadString(); err != nil {
+      return thrift.PrependError("error reading field 0: ", err)
+} else {
+      _key16 = v
+}
+var _val17 string
+      if v, err := iprot.ReadString(); err != nil {
+      return thrift.PrependError("error reading field 0: ", err)
+} else {
+      _val17 = v
+}
+      _val15[_key16] = _val17
+    }
+    if err := iprot.ReadMapEnd(); err != nil {
+      return thrift.PrependError("error reading map end: ", err)
+    }
+    p.Success[_key14] = _val15
+  }
+  if err := iprot.ReadMapEnd(); err != nil {
+    return thrift.PrependError("error reading map end: ", err)
+  }
+  return nil
+}
+
+func (p *SystemListOutputResult) Write(oprot thrift.TProtocol) error {
+  if err := oprot.WriteStructBegin("listOutput_result"); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
+  if p != nil {
+    if err := p.writeField0(oprot); err != nil { return err }
+  }
+  if err := oprot.WriteFieldStop(); err != nil {
+    return thrift.PrependError("write field stop error: ", err) }
+  if err := oprot.WriteStructEnd(); err != nil {
+    return thrift.PrependError("write struct stop error: ", err) }
+  return nil
+}
+
+func (p *SystemListOutputResult) writeField0(oprot thrift.TProtocol) (err error) {
+  if p.IsSetSuccess() {
+    if err := oprot.WriteFieldBegin("success", thrift.MAP, 0); err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T write field begin error 0:success: ", p), err) }
+    if err := oprot.WriteMapBegin(thrift.I32, thrift.MAP, len(p.Success)); err != nil {
+      return thrift.PrependError("error writing map begin: ", err)
+    }
+    for k, v := range p.Success {
+      if err := oprot.WriteI32(int32(k)); err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T. (0) field write error: ", p), err) }
+      if err := oprot.WriteMapBegin(thrift.STRING, thrift.STRING, len(v)); err != nil {
+        return thrift.PrependError("error writing map begin: ", err)
+      }
+      for k, v := range v {
+        if err := oprot.WriteString(string(k)); err != nil {
+        return thrift.PrependError(fmt.Sprintf("%T. (0) field write error: ", p), err) }
+        if err := oprot.WriteString(string(v)); err != nil {
+        return thrift.PrependError(fmt.Sprintf("%T. (0) field write error: ", p), err) }
+      }
+      if err := oprot.WriteMapEnd(); err != nil {
+        return thrift.PrependError("error writing map end: ", err)
+      }
+    }
+    if err := oprot.WriteMapEnd(); err != nil {
+      return thrift.PrependError("error writing map end: ", err)
+    }
+    if err := oprot.WriteFieldEnd(); err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T write field end error 0:success: ", p), err) }
+  }
+  return err
+}
+
+func (p *SystemListOutputResult) String() string {
+  if p == nil {
+    return "<nil>"
+  }
+  return fmt.Sprintf("SystemListOutputResult(%+v)", *p)
 }
 
 

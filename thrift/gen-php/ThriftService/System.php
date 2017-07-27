@@ -31,6 +31,11 @@ interface SystemIf {
    * @return string
    */
   public function count($num);
+  /**
+   * @param array $data
+   * @return array
+   */
+  public function listOutput(array $data);
 }
 
 
@@ -195,6 +200,57 @@ class SystemClient implements \ThriftService\SystemIf {
       return $result->success;
     }
     throw new \Exception("count failed: unknown result");
+  }
+
+  public function listOutput(array $data)
+  {
+    $this->send_listOutput($data);
+    return $this->recv_listOutput();
+  }
+
+  public function send_listOutput(array $data)
+  {
+    $args = new \ThriftService\System_listOutput_args();
+    $args->data = $data;
+    $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($this->output_, 'listOutput', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
+    }
+    else
+    {
+      $this->output_->writeMessageBegin('listOutput', TMessageType::CALL, $this->seqid_);
+      $args->write($this->output_);
+      $this->output_->writeMessageEnd();
+      $this->output_->getTransport()->flush();
+    }
+  }
+
+  public function recv_listOutput()
+  {
+    $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\ThriftService\System_listOutput_result', $this->input_->isStrictRead());
+    else
+    {
+      $rseqid = 0;
+      $fname = null;
+      $mtype = 0;
+
+      $this->input_->readMessageBegin($fname, $mtype, $rseqid);
+      if ($mtype == TMessageType::EXCEPTION) {
+        $x = new TApplicationException();
+        $x->read($this->input_);
+        $this->input_->readMessageEnd();
+        throw $x;
+      }
+      $result = new \ThriftService\System_listOutput_result();
+      $result->read($this->input_);
+      $this->input_->readMessageEnd();
+    }
+    if ($result->success !== null) {
+      return $result->success;
+    }
+    throw new \Exception("listOutput failed: unknown result");
   }
 
 }
@@ -627,6 +683,286 @@ class System_count_result {
 
 }
 
+class System_listOutput_args {
+  static $_TSPEC;
+
+  /**
+   * @var array
+   */
+  public $data = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'data',
+          'type' => TType::MAP,
+          'ktype' => TType::I32,
+          'vtype' => TType::MAP,
+          'key' => array(
+            'type' => TType::I32,
+          ),
+          'val' => array(
+            'type' => TType::MAP,
+            'ktype' => TType::STRING,
+            'vtype' => TType::STRING,
+            'key' => array(
+              'type' => TType::STRING,
+            ),
+            'val' => array(
+              'type' => TType::STRING,
+              ),
+            ),
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['data'])) {
+        $this->data = $vals['data'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'System_listOutput_args';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::MAP) {
+            $this->data = array();
+            $_size0 = 0;
+            $_ktype1 = 0;
+            $_vtype2 = 0;
+            $xfer += $input->readMapBegin($_ktype1, $_vtype2, $_size0);
+            for ($_i4 = 0; $_i4 < $_size0; ++$_i4)
+            {
+              $key5 = 0;
+              $val6 = array();
+              $xfer += $input->readI32($key5);
+              $val6 = array();
+              $_size7 = 0;
+              $_ktype8 = 0;
+              $_vtype9 = 0;
+              $xfer += $input->readMapBegin($_ktype8, $_vtype9, $_size7);
+              for ($_i11 = 0; $_i11 < $_size7; ++$_i11)
+              {
+                $key12 = '';
+                $val13 = '';
+                $xfer += $input->readString($key12);
+                $xfer += $input->readString($val13);
+                $val6[$key12] = $val13;
+              }
+              $xfer += $input->readMapEnd();
+              $this->data[$key5] = $val6;
+            }
+            $xfer += $input->readMapEnd();
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('System_listOutput_args');
+    if ($this->data !== null) {
+      if (!is_array($this->data)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('data', TType::MAP, 1);
+      {
+        $output->writeMapBegin(TType::I32, TType::MAP, count($this->data));
+        {
+          foreach ($this->data as $kiter14 => $viter15)
+          {
+            $xfer += $output->writeI32($kiter14);
+            {
+              $output->writeMapBegin(TType::STRING, TType::STRING, count($viter15));
+              {
+                foreach ($viter15 as $kiter16 => $viter17)
+                {
+                  $xfer += $output->writeString($kiter16);
+                  $xfer += $output->writeString($viter17);
+                }
+              }
+              $output->writeMapEnd();
+            }
+          }
+        }
+        $output->writeMapEnd();
+      }
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class System_listOutput_result {
+  static $_TSPEC;
+
+  /**
+   * @var array
+   */
+  public $success = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        0 => array(
+          'var' => 'success',
+          'type' => TType::MAP,
+          'ktype' => TType::I32,
+          'vtype' => TType::MAP,
+          'key' => array(
+            'type' => TType::I32,
+          ),
+          'val' => array(
+            'type' => TType::MAP,
+            'ktype' => TType::STRING,
+            'vtype' => TType::STRING,
+            'key' => array(
+              'type' => TType::STRING,
+            ),
+            'val' => array(
+              'type' => TType::STRING,
+              ),
+            ),
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['success'])) {
+        $this->success = $vals['success'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'System_listOutput_result';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 0:
+          if ($ftype == TType::MAP) {
+            $this->success = array();
+            $_size18 = 0;
+            $_ktype19 = 0;
+            $_vtype20 = 0;
+            $xfer += $input->readMapBegin($_ktype19, $_vtype20, $_size18);
+            for ($_i22 = 0; $_i22 < $_size18; ++$_i22)
+            {
+              $key23 = 0;
+              $val24 = array();
+              $xfer += $input->readI32($key23);
+              $val24 = array();
+              $_size25 = 0;
+              $_ktype26 = 0;
+              $_vtype27 = 0;
+              $xfer += $input->readMapBegin($_ktype26, $_vtype27, $_size25);
+              for ($_i29 = 0; $_i29 < $_size25; ++$_i29)
+              {
+                $key30 = '';
+                $val31 = '';
+                $xfer += $input->readString($key30);
+                $xfer += $input->readString($val31);
+                $val24[$key30] = $val31;
+              }
+              $xfer += $input->readMapEnd();
+              $this->success[$key23] = $val24;
+            }
+            $xfer += $input->readMapEnd();
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('System_listOutput_result');
+    if ($this->success !== null) {
+      if (!is_array($this->success)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('success', TType::MAP, 0);
+      {
+        $output->writeMapBegin(TType::I32, TType::MAP, count($this->success));
+        {
+          foreach ($this->success as $kiter32 => $viter33)
+          {
+            $xfer += $output->writeI32($kiter32);
+            {
+              $output->writeMapBegin(TType::STRING, TType::STRING, count($viter33));
+              {
+                foreach ($viter33 as $kiter34 => $viter35)
+                {
+                  $xfer += $output->writeString($kiter34);
+                  $xfer += $output->writeString($viter35);
+                }
+              }
+              $output->writeMapEnd();
+            }
+          }
+        }
+        $output->writeMapEnd();
+      }
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
 class SystemProcessor {
   protected $handler_ = null;
   public function __construct($handler) {
@@ -706,6 +1042,25 @@ class SystemProcessor {
     else
     {
       $output->writeMessageBegin('count', TMessageType::REPLY, $seqid);
+      $result->write($output);
+      $output->writeMessageEnd();
+      $output->getTransport()->flush();
+    }
+  }
+  protected function process_listOutput($seqid, $input, $output) {
+    $args = new \ThriftService\System_listOutput_args();
+    $args->read($input);
+    $input->readMessageEnd();
+    $result = new \ThriftService\System_listOutput_result();
+    $result->success = $this->handler_->listOutput($args->data);
+    $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($output, 'listOutput', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
+    }
+    else
+    {
+      $output->writeMessageBegin('listOutput', TMessageType::REPLY, $seqid);
       $result->write($output);
       $output->writeMessageEnd();
       $output->getTransport()->flush();

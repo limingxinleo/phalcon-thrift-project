@@ -29,6 +29,17 @@ class TestTask extends \Phalcon\Cli\Task
         echo PHP_EOL;
         echo $client->count(0);
 
+        $data = [];
+        for ($i = 0; $i < 10000; $i++) {
+            $data[] = ['id' => $i, 'name' => uniqid()];
+        }
+        $time = microtime(true);
+        $result = $client->listOutput($data);
+        echo PHP_EOL;
+        echo count($result);
+        echo PHP_EOL;
+        echo "运行时间：" . (microtime(true) - $time);
+
         $transport->close();
     }
 
@@ -51,6 +62,17 @@ class TestTask extends \Phalcon\Cli\Task
         echo $client->version();
         echo PHP_EOL;
         echo $client->count(0);
+
+        $data = [];
+        for ($i = 0; $i < 10000; $i++) {
+            $data[] = ['id' => $i, 'name' => uniqid()];
+        }
+        $time = microtime(true);
+        $result = $client->listOutput($data);
+        echo PHP_EOL;
+        echo count($result);
+        echo PHP_EOL;
+        echo "运行时间：" . (microtime(true) - $time);
 
         $transport->close();
     }

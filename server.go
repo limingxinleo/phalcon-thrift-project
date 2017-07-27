@@ -23,6 +23,12 @@ func (this *SystemThrift) Test(name string) (r string, err error) {
 	r = "Hello " + name
 	return
 }
+
+func (this *SystemThrift) ListOutput(data map[int32]map[string]string) (r map[int32]map[string]string, err error) {
+	r = data;
+	return
+}
+
 func (this *SystemThrift) Count(num int16) (r string, err error) {
 	for j := 0; j <= 10000; j++ {
 		for i := 0; i <= 10000; i++ {

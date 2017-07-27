@@ -33,5 +33,10 @@ class System extends Injectable implements \ThriftService\SystemIf
         return 'finish';
     }
 
+    public function listOutput(array $data)
+    {
+        return $data;
+    }
+
 
 }
