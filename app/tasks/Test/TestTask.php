@@ -19,26 +19,12 @@ class TestTask extends \Phalcon\Cli\Task
 
         $transport = new TBufferedTransport($socket, 1024, 1024);
         $protocol = new TBinaryProtocol($transport);
-        $client = new \ThriftService\SystemClient($protocol);
+        $client = new \MicroService\AppClient($protocol);
 
         $transport->open();
 
-        echo $client->test(" World! ");
-        echo PHP_EOL;
         echo $client->version();
         echo PHP_EOL;
-        echo $client->count(0);
-
-        $data = [];
-        for ($i = 0; $i < 10000; $i++) {
-            $data[] = ['id' => $i, 'name' => uniqid()];
-        }
-        $time = microtime(true);
-        $result = $client->listOutput($data);
-        echo PHP_EOL;
-        echo count($result);
-        echo PHP_EOL;
-        echo "运行时间：" . (microtime(true) - $time);
 
         $transport->close();
     }
@@ -54,26 +40,12 @@ class TestTask extends \Phalcon\Cli\Task
         // $transport = new TFramedTransport($socket, 1024, 1024);
         $transport = new TBufferedTransport($socket, 1024, 1024);
         $protocol = new TBinaryProtocol($transport);
-        $client = new \ThriftService\SystemClient($protocol);
+        $client = new \MicroService\AppClient($protocol);
 
         $transport->open();
 
-        echo $client->test(" World! ");
-        echo PHP_EOL;
         echo $client->version();
         echo PHP_EOL;
-        echo $client->count(0);
-
-        $data = [];
-        for ($i = 0; $i < 10000; $i++) {
-            $data[] = ['id' => $i, 'name' => uniqid()];
-        }
-        $time = microtime(true);
-        $result = $client->listOutput($data);
-        echo PHP_EOL;
-        echo count($result);
-        echo PHP_EOL;
-        echo "运行时间：" . (microtime(true) - $time);
 
         $transport->close();
     }

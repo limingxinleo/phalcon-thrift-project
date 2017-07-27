@@ -4,38 +4,18 @@ import (
 	"fmt"
 	"thrift"
 	"os"
-	"phalcon/thrift/service"
+	"micro/service"
 )
 
 const (
 	NetworkAddr = "0.0.0.0:10086"
 )
 
-type SystemThrift struct {
+type App struct {
 }
 
-func (this *SystemThrift) Version() (r string, err error) {
+func (this *App) Version() (r string, err error) {
 	r = "1.0.0"
-	return
-}
-
-func (this *SystemThrift) Test(name string) (r string, err error) {
-	r = "Hello " + name
-	return
-}
-
-func (this *SystemThrift) ListOutput(data map[int32]map[string]string) (r map[int32]map[string]string, err error) {
-	r = data;
-	return
-}
-
-func (this *SystemThrift) Count(num int16) (r string, err error) {
-	for j := 0; j <= 10000; j++ {
-		for i := 0; i <= 10000; i++ {
-			num++;
-		}
-	}
-	r = "finish"
 	return
 }
 
@@ -51,8 +31,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	handler := &SystemThrift{}
-	processor := service.NewSystemProcessor(handler)
+	handler := &App{}
+	processor := service.NewAppProcessor(handler)
 
 	server := thrift.NewTSimpleServer4(processor, serverTransport, transportFactory, protocolFactory)
 	fmt.Println("thrift server in", NetworkAddr)

@@ -11,32 +11,10 @@ namespace App\Logics\Thrift;
 
 use Phalcon\Di\Injectable;
 
-class System extends Injectable implements \ThriftService\SystemIf
+class App extends Injectable implements \MicroService\AppIf
 {
     public function version()
     {
         return $this->config->version;
     }
-
-    public function test($name)
-    {
-        return "Hello " . $name;
-    }
-
-    public function count($num)
-    {
-        for ($i = 0; $i < 10000; $i++) {
-            for ($j = 0; $j < 10000; $j++) {
-                $num++;
-            }
-        }
-        return 'finish';
-    }
-
-    public function listOutput(array $data)
-    {
-        return $data;
-    }
-
-
 }

@@ -13,7 +13,7 @@ import (
         "strconv"
         "strings"
         "thrift"
-        "phalcon/thrift/service"
+        "micro/service"
 )
 
 
@@ -22,9 +22,6 @@ func Usage() {
   flag.PrintDefaults()
   fmt.Fprintln(os.Stderr, "\nFunctions:")
   fmt.Fprintln(os.Stderr, "  string version()")
-  fmt.Fprintln(os.Stderr, "  string test(string name)")
-  fmt.Fprintln(os.Stderr, "  string count(i16 num)")
-  fmt.Fprintln(os.Stderr, "   listOutput( data)")
   fmt.Fprintln(os.Stderr)
   os.Exit(0)
 }
@@ -112,7 +109,7 @@ func main() {
     Usage()
     os.Exit(1)
   }
-  client := service.NewSystemClientFactory(trans, protocolFactory)
+  client := service.NewAppClientFactory(trans, protocolFactory)
   if err := trans.Open(); err != nil {
     fmt.Fprintln(os.Stderr, "Error opening socket to ", host, ":", port, " ", err)
     os.Exit(1)
@@ -125,57 +122,6 @@ func main() {
       flag.Usage()
     }
     fmt.Print(client.Version())
-    fmt.Print("\n")
-    break
-  case "test":
-    if flag.NArg() - 1 != 1 {
-      fmt.Fprintln(os.Stderr, "Test requires 1 args")
-      flag.Usage()
-    }
-    argvalue0 := flag.Arg(1)
-    value0 := argvalue0
-    fmt.Print(client.Test(value0))
-    fmt.Print("\n")
-    break
-  case "count":
-    if flag.NArg() - 1 != 1 {
-      fmt.Fprintln(os.Stderr, "Count requires 1 args")
-      flag.Usage()
-    }
-    tmp0, err19 := (strconv.Atoi(flag.Arg(1)))
-    if err19 != nil {
-      Usage()
-      return
-    }
-    argvalue0 := int16(tmp0)
-    value0 := argvalue0
-    fmt.Print(client.Count(value0))
-    fmt.Print("\n")
-    break
-  case "listOutput":
-    if flag.NArg() - 1 != 1 {
-      fmt.Fprintln(os.Stderr, "ListOutput requires 1 args")
-      flag.Usage()
-    }
-    arg20 := flag.Arg(1)
-    mbTrans21 := thrift.NewTMemoryBufferLen(len(arg20))
-    defer mbTrans21.Close()
-    _, err22 := mbTrans21.WriteString(arg20)
-    if err22 != nil { 
-      Usage()
-      return
-    }
-    factory23 := thrift.NewTSimpleJSONProtocolFactory()
-    jsProt24 := factory23.GetProtocol(mbTrans21)
-    containerStruct0 := service.NewSystemListOutputArgs()
-    err25 := containerStruct0.ReadField1(jsProt24)
-    if err25 != nil {
-      Usage()
-      return
-    }
-    argvalue0 := containerStruct0.Data
-    value0 := argvalue0
-    fmt.Print(client.ListOutput(value0))
     fmt.Print("\n")
     break
   case "":

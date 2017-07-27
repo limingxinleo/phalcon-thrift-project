@@ -210,5 +210,6 @@ crontab -e
 * 路由匹配规则：倘若有两个路由都符合规则，会有限匹配后面的路由。故，隐性路由要写在显性路由前面。
 
 
-* 使用Composer安装Thrift扩展后，把go的扩展包拷贝到GOPATH中。编译生成Go服务之后，全局替换 git.apache.org/thrift.git/lib/go/thrift 为 thrift
+* 使用Composer安装Thrift扩展后，把go的扩展包拷贝到GOPATH中。
+* 编译Go服务 使用 thrift -r --gen go:thrift_import=thrift App.thrift
 
