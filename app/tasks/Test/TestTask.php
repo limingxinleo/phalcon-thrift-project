@@ -51,7 +51,8 @@ class TestTask extends \Phalcon\Cli\Task
         $thrift->setPort('10086');
         $socket = $thrift->socket();
 
-        $transport = new TFramedTransport($socket, 1024, 1024);
+        // $transport = new TFramedTransport($socket, 1024, 1024);
+        $transport = new TBufferedTransport($socket, 1024, 1024);
         $protocol = new TBinaryProtocol($transport);
         $client = new \ThriftService\SystemClient($protocol);
 

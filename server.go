@@ -40,7 +40,8 @@ func (this *SystemThrift) Count(num int16) (r string, err error) {
 }
 
 func main() {
-	transportFactory := thrift.NewTFramedTransportFactory(thrift.NewTTransportFactory())
+	//transportFactory := thrift.NewTFramedTransportFactory(thrift.NewTTransportFactory())
+	transportFactory := thrift.NewTBufferedTransportFactory(1024)
 	protocolFactory := thrift.NewTBinaryProtocolFactoryDefault()
 	//protocolFactory := thrift.NewTCompactProtocolFactory()
 
