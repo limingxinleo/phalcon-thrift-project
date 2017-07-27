@@ -90,6 +90,14 @@ www  WEB部署目录（或者子目录）
 [devtools](https://github.com/limingxinleo/phalcon-devtools.git)
 > 如果想使用更加定制化的功能，比如在app/config/config.ini维护控制器的默认信息，请使用修改后的[devtools](https://github.com/limingxinleo/phalcon-devtools.git) dev分支。
 
+## 其他扩展版本
+[Thrift GO服务版本](https://github.com/limingxinleo/thrift-go-phalcon-project)
+
+[Yar 服务版本](https://github.com/limingxinleo/yar-phalcon-project)
+
+[Vue 版本](https://github.com/limingxinleo/simple-vue-phalcon-project)
+
+
 ## Web开发规范
 调用方式
 ~~~
@@ -203,3 +211,4 @@ crontab -e
 
 
 * 使用Composer安装Thrift扩展后，把go的扩展包拷贝到GOPATH中。编译生成Go服务之后，全局替换 git.apache.org/thrift.git/lib/go/thrift 为 thrift
+
