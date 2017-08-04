@@ -6,27 +6,12 @@
 // +----------------------------------------------------------------------
 // | Author: limx <715557344@qq.com> <http://www.lmx0536.cn>
 // +----------------------------------------------------------------------
-use limx\phalcon\Utils\Debug;
 use limx\phalcon\Http\Response;
 use limx\Support\Arr;
-
-if (!function_exists('dump')) {
-    /**
-     * [dump desc]
-     * @desc   标准化的数组输出格式
-     * @author limx
-     * @param $data
-     */
-    function dump($data)
-    {
-        Debug::dump($data);
-    }
-}
 
 if (!function_exists('success')) {
 
     /**
-     * [success desc]
      * @desc
      * @author limx
      * @param array $data
@@ -41,7 +26,6 @@ if (!function_exists('success')) {
 if (!function_exists('error')) {
 
     /**
-     * [error desc]
      * @desc
      * @author limx
      * @param string $msg
@@ -57,7 +41,6 @@ if (!function_exists('error')) {
 
 if (!function_exists('app')) {
     /**
-     * [app desc]
      * @desc   获取app配置文件的值
      * @author limx
      * @param $id
@@ -72,7 +55,6 @@ if (!function_exists('app')) {
 
 if (!function_exists('dispatch_error')) {
     /**
-     * [dispatch_error]
      * @desc   内部跳转错误页面
      * @author limx
      * @param int    $code
@@ -97,7 +79,6 @@ if (!function_exists('dispatch_error')) {
 
 if (!function_exists('library')) {
     /**
-     * [library desc]
      * @desc   载入library内的第三方包
      * @author limx
      * @param string $file

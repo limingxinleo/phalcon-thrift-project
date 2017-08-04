@@ -26,7 +26,7 @@ return new Config(
         | This value is version for this project.
         |
         */
-        'version' => '1.9.10',
+        'version' => '1.9.13',
 
         /*
         |--------------------------------------------------------------------------
@@ -260,6 +260,7 @@ return new Config(
                 'cookies' => App\Services\Cookies::class,
                 'session' => App\Services\Session::class,
                 'modelsManager' => App\Services\ModelsManager::class,
+                'logger' => App\Services\Logger::class,
                 'thrift' => App\Services\Thrift::class,
             ],
             'cli' => [

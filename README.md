@@ -181,10 +181,14 @@ php run test
 ## 定时脚本 ##
 ~~~
 crontab -e 
-编辑增加 * * * * * /path/to/php /path/to/run System\\\\Cron >> /dev/null 2>&1
+编辑增加 * * * * * /path/to/php /path/to/run System\\Cron >> /dev/null 2>&1
 启动crond 服务
-在config/app.php 中维护cron-tasks数组
+在config/app.php 中维护cron-tasks数组 样例如下
+'cron-tasks' => [
+    ['task' => 'System\\Clear', 'action' => 'view', 'params' => ['yes'], 'schedule' => ['dailyAt', [2, 0]]],
+],
 ~~~
+schedule写法为[方法名,参数数组]，详见 [Schedule](https://github.com/limingxinleo/support-schedule)
 
 ## 注意事项 ##
 * 利用phalcon脚本新建model时，使用phalcon model name --namespace=App\Models --extends=Model --force

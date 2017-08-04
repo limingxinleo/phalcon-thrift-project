@@ -1,6 +1,6 @@
 <?php
 // +----------------------------------------------------------------------
-// | Cookies 服务 [ WE CAN DO IT JUST THINK IT ]
+// | Logger.php [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
 // | Copyright (c) 2016-2017 limingxinleo All rights reserved.
 // +----------------------------------------------------------------------
@@ -8,23 +8,23 @@
 // +----------------------------------------------------------------------
 namespace App\Services;
 
+use limx\phalcon\Logger\Factory;
+use limx\phalcon\Logger\Sys;
 use Phalcon\Config;
 use Phalcon\DI\FactoryDefault;
 
-class Cookies implements ServiceProviderInterface
+class Logger implements ServiceProviderInterface
 {
     public function register(FactoryDefault $di, Config $config)
     {
-        $di->setShared(
-            "cookies",
-            function () use ($config) {
-                $cookies = new \Phalcon\Http\Response\Cookies();
-
-                $cookies->useEncryption($config->cookies->isCrypt);
-
-                return $cookies;
-            }
-        );
+        /**
+         *  $factory = new di('logger');
+         *  $logger = $factory->getLogger('info', Sys::LOG_ADAPTER_FILE, ['dir' => 'system']);
+         *  $logger->info('日志测试');
+         */
+        $di->setShared('logger', function () use ($config) {
+            return new Factory($config);
+        });
     }
 
 }
