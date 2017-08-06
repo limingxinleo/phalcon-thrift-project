@@ -8,6 +8,7 @@
 // +----------------------------------------------------------------------
 namespace App\Listeners\System;
 
+use limx\phalcon\Logger\Sys;
 use Phalcon\Db\Profiler;
 use Phalcon\Events\Event;
 use Phalcon\Logger;
@@ -30,8 +31,10 @@ class DbListener
         if (!is_dir($dir)) {
             mkdir($dir, 0777, true);
         }
+
         $this->_profiler = new Profiler();
-        $this->_logger = new FileLogger($dir . "/db.log");
+
+        $this->_logger = di('logger')->getLogger('sql', Sys::LOG_ADAPTER_FILE);
     }
 
     /**
@@ -76,7 +79,7 @@ class DbListener
 
         $str = PHP_EOL;
         $str .= "SQL语句: " . $sql . PHP_EOL;
-        $str .= "绑定参数: " . json_encode($params) . PHP_EOL;
+        $str .= "绑定参数: " . json_encode($params, JSON_UNESCAPED_UNICODE) . PHP_EOL;
         $str .= "开始时间: " . $begintime . PHP_EOL;
         $str .= "结束时间: " . $endtime . PHP_EOL;
         $str .= "执行时间: " . $runtime . PHP_EOL;
