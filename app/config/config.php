@@ -26,7 +26,7 @@ return new Config(
         | This value is version for this project.
         |
         */
-        'version' => '1.10.0',
+        'version' => '1.10.6',
 
         /*
         |--------------------------------------------------------------------------
@@ -133,6 +133,7 @@ return new Config(
         'application' => [
             'configDir' => APP_PATH . '/config/',
             'controllersDir' => APP_PATH . '/controllers/',
+            'jobsDir' => APP_PATH . '/jobs/',
             'libraryDir' => APP_PATH . '/library/',
             'listenersDir' => APP_PATH . '/listeners/',
             'logicsDir' => APP_PATH . '/logics/',
@@ -235,6 +236,21 @@ return new Config(
         */
         'crypt' => [
             'key' => env('CRYPT_KEY', 'phalcon-project-cookie->key'),
+        ],
+
+        /*
+        |--------------------------------------------------------------------------
+        | QUEUE Environment
+        |--------------------------------------------------------------------------
+        |
+        | key: 消息队列的KEY键
+        | delay_key: 延时消息队列的KEY键
+        |
+        */
+        'queue' => [
+            'key' => env('QUEUE_KEY', 'phalcon:queue:default'),
+            'delay_key' => env('QUEUE_DELAY_KEY', 'phalcon:queue:delay'),
+            'error_key' => env('QUEUE_ERROR_KEY', 'phalcon:queue:error'),
         ],
 
         /*

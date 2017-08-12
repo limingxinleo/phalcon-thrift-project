@@ -1,25 +1,24 @@
 <?php
 // +----------------------------------------------------------------------
-// | BOOTSTRAP [ WE CAN DO IT JUST THINK IT ]
+// | Queue.php [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
 // | Copyright (c) 2016-2017 limingxinleo All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: limx <715557344@qq.com> <https://github.com/limingxinleo>
 // +----------------------------------------------------------------------
-defined('APP_PATH') || define('APP_PATH', __DIR__);
+namespace App\Utils;
 
-use App\DI;
+class Queue
+{
+    public static function push($job)
+    {
+        $redis_key = di('config')->queue->key;
+        Redis::lpush($redis_key, serialize($job));
+    }
 
-/** Read the configuration */
-$config = include APP_PATH . "/config/config.php";
-
-/** Read auto-loader */
-include APP_PATH . "/config/loader.php";
-
-/** 设置时区 */
-ini_set('date.timezone', $config->timezone);
-
-
-$di = (new DI($config))->getDI();
-
-return $di;
+    public static function delay($job, $second)
+    {
+        $redis_key = di('config')->queue->delay_key;
+        Redis::zadd($redis_key, time() + $second, serialize($job));
+    }
+}
