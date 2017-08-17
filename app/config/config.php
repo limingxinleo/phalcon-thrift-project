@@ -26,7 +26,7 @@ return new Config(
         | This value is version for this project.
         |
         */
-        'version' => '1.10.6',
+        'version' => '1.10.7',
 
         /*
         |--------------------------------------------------------------------------
@@ -92,8 +92,6 @@ return new Config(
             'persistent' => env('REDIS_PERSISTENT', false),
             'index' => env('REDIS_INDEX', 0),
             'prefix' => env('REDIS_PREFIX', ''),
-            // 是否开启Redis辅助类
-            'isUtils' => env('REDIS_IS_UTILS', false),
         ],
 
         /*
@@ -244,13 +242,14 @@ return new Config(
         |--------------------------------------------------------------------------
         |
         | key: 消息队列的KEY键
-        | delay_key: 延时消息队列的KEY键
+        | delayKey: 延时消息队列的KEY键
+        | errorKey: 失败的消息队列的KEY键
         |
         */
         'queue' => [
             'key' => env('QUEUE_KEY', 'phalcon:queue:default'),
-            'delay_key' => env('QUEUE_DELAY_KEY', 'phalcon:queue:delay'),
-            'error_key' => env('QUEUE_ERROR_KEY', 'phalcon:queue:error'),
+            'delayKey' => env('QUEUE_DELAY_KEY', 'phalcon:queue:delay'),
+            'errorKey' => env('QUEUE_ERROR_KEY', 'phalcon:queue:error'),
         ],
 
         /*
