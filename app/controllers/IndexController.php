@@ -26,8 +26,8 @@ class IndexController extends Controller
     public function serverAction()
     {
         $this->thrift->handle(
-            \App\Logics\Thrift\System::class,
-            \ThriftService\SystemProcessor::class
+            \App\Logics\Thrift\App::class,
+            \MicroService\SystemProcessor::class
         );
     }
 }
