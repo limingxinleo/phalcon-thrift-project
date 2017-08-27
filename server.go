@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"micro/service"
+	"micro/impl"
 	"os"
 	"thrift"
 )
@@ -10,14 +11,6 @@ import (
 const (
 	NetworkAddr = "0.0.0.0:10086"
 )
-
-type App struct {
-}
-
-func (this *App) Version() (r string, err error) {
-	r = "1.0.0"
-	return
-}
 
 func main() {
 	//transportFactory := thrift.NewTFramedTransportFactory(thrift.NewTTransportFactory())
@@ -31,7 +24,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	handler := &App{}
+	handler := &impl.App{}
 	processor := service.NewAppProcessor(handler)
 
 	server := thrift.NewTSimpleServer4(processor, serverTransport, transportFactory, protocolFactory)
