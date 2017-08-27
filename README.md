@@ -263,6 +263,9 @@ schedule写法为[方法名,参数数组]，详见 [Schedule](https://github.com
 * 路由匹配规则：倘若有两个路由都符合规则，会有限匹配后面的路由。故，隐性路由要写在显性路由前面。
 
 
-* 使用Composer安装Thrift扩展后，把go的扩展包拷贝到GOPATH中。
+* 使用Composer安装Thrift扩展后，把go的扩展包拷贝到GOPATH中(或建立软连接)。
+~~~
+ln -s  /your/path/to/thrift-go-phalcon-project/vendor/apache/thrift/lib/go/thrift thrift
+~~~
 * 编译Go服务 使用 thrift -r --gen go:thrift_import=thrift App.thrift
 

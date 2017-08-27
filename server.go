@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"thrift"
-	"os"
 	"micro/service"
+	"os"
+	"thrift"
 )
 
 const (
