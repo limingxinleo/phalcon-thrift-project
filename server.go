@@ -24,10 +24,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	handler := &impl.App{}
-	processor := service.NewAppProcessor(handler)
-
+	processor := thrift.NewTMultiplexedProcessor();
+	processor.RegisterProcessor("app", service.NewAppProcessor(&impl.App{}));
+	//processor.RegisterProcessor("user", service.NewUserProcessor(&impl.User{}));
 	server := thrift.NewTSimpleServer4(processor, serverTransport, transportFactory, protocolFactory)
+
 	fmt.Println("thrift server in", NetworkAddr)
 	server.Serve()
 }

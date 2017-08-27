@@ -3,6 +3,7 @@
 namespace App\Tasks\Test;
 
 use Thrift\Protocol\TBinaryProtocol;
+use Thrift\Protocol\TMultiplexedProtocol;
 use Thrift\Transport\TFramedTransport;
 use Thrift\Transport\TSocket;
 use Thrift\Transport\THttpClient;
@@ -40,7 +41,11 @@ class TestTask extends \Phalcon\Cli\Task
         // $transport = new TFramedTransport($socket, 1024, 1024);
         $transport = new TBufferedTransport($socket, 1024, 1024);
         $protocol = new TBinaryProtocol($transport);
-        $client = new \MicroService\AppClient($protocol);
+
+        $app_protocol = new TMultiplexedProtocol($protocol, "app");
+        // $user_protocal = new TMultiplexedProtocol($protocol, "user");
+
+        $client = new \MicroService\AppClient($app_protocol);
 
         $transport->open();
 
