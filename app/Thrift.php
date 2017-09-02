@@ -19,13 +19,7 @@ use Thrift\Exception\TException;
 
 class Thrift
 {
-    protected $client = [];
-
-    public $host;
-
-    public $port;
-
-    public function __construct($namespaces, $host = '127.0.0.1', $port = '80')
+    public function __construct($namespaces)
     {
         $gen_dir = ROOT_PATH . '/thrift/gen-php';
         $loader = new ThriftClassLoader();
@@ -33,20 +27,6 @@ class Thrift
             $loader->registerDefinition($namespace, $gen_dir);
         }
         $loader->register();
-
-        $this->host = $host;
-
-        $this->port = $port;
-    }
-
-    public function setHost($host)
-    {
-        $this->host = $host;
-    }
-
-    public function setPort($port)
-    {
-        $this->port = $port;
     }
 
     public function handle($handlerClass, $processorClass)
@@ -63,13 +43,13 @@ class Thrift
         return true;
     }
 
-    public function client($uri = '', $scheme = 'http')
+    public function client($host, $port, $uri = '', $scheme = 'http')
     {
-        return new THttpClient($this->host, $this->port, $uri, $scheme);
+        return new THttpClient($host, $port, $uri, $scheme);
     }
 
-    public function socket($persist = false, $debugHandler = null)
+    public function socket($host, $port, $persist = false, $debugHandler = null)
     {
-        return new TSocket($this->host, $this->port, $persist, $debugHandler);
+        return new TSocket($host, $port, $persist, $debugHandler);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Tasks\Test;
 
+use App\Logics\Thrift\Clients\AppClient;
 use Thrift\Protocol\TBinaryProtocol;
 use Thrift\Protocol\TMultiplexedProtocol;
 use Thrift\Transport\TFramedTransport;
@@ -34,9 +35,7 @@ class TestTask extends \Phalcon\Cli\Task
     {
         $thrift = di('thrift');
 
-        $thrift->setHost('127.0.0.1');
-        $thrift->setPort('10086');
-        $socket = $thrift->socket();
+        $socket = $thrift->socket('127.0.0.1', '10086');
 
         // $transport = new TFramedTransport($socket, 1024, 1024);
         $transport = new TBufferedTransport($socket, 1024, 1024);
@@ -53,6 +52,13 @@ class TestTask extends \Phalcon\Cli\Task
         echo PHP_EOL;
 
         $transport->close();
+    }
+
+    public function testAction()
+    {
+        $client = AppClient::getInstance();
+
+        dd($client->version());
     }
 
 }
