@@ -82,7 +82,7 @@ abstract class Client implements ClientInterface
     public static function __callStatic($name, $arguments)
     {
         $obj = static::getInstance();
-        return $obj->client->name(...$arguments);
+        return $obj->client->$name(...$arguments);
     }
 
     public function __call($name, $arguments)
