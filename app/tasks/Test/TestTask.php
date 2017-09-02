@@ -13,25 +13,11 @@ use Thrift\Exception\TException;
 
 class TestTask extends \Phalcon\Cli\Task
 {
-
-    public function phpClientAction()
-    {
-        $thrift = di('thrift');
-        $socket = $thrift->client('/server');
-
-        $transport = new TBufferedTransport($socket, 1024, 1024);
-        $protocol = new TBinaryProtocol($transport);
-        $client = new \MicroService\AppClient($protocol);
-
-        $transport->open();
-
-        echo $client->version();
-        echo PHP_EOL;
-
-        $transport->close();
-    }
-
-    public function goClientAction()
+    /**
+     * @desc   未封装Client调用方式
+     * @author limx
+     */
+    public function go1Action()
     {
         $thrift = di('thrift');
 
@@ -54,11 +40,33 @@ class TestTask extends \Phalcon\Cli\Task
         $transport->close();
     }
 
-    public function testAction()
+    /**
+     * @desc   新版go服务调用
+     * @author limx
+     */
+    public function goAction()
     {
         $client = AppClient::getInstance();
 
-        dd($client->version());
+        dump($client->version());
+    }
+
+    /**
+     * @desc   测试
+     * @author limx
+     */
+    public function testAction()
+    {
+        $client = AppClient::getInstance();
+        $client = AppClient::getInstance();
+
+        dump($client->version());
+
+        $client = AppClient::getInstance();
+
+        dump($client->version());
+
+        dd(AppClient::$_instance);
     }
 
 }

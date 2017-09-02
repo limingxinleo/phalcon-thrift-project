@@ -23,11 +23,11 @@ class IndexController extends Controller
         return $this->view->render('index', 'index');
     }
 
-    public function serverAction()
-    {
-        $this->thrift->handle(
-            \App\Logics\Thrift\App::class,
-            \MicroService\SystemProcessor::class
-        );
-    }
+    // public function serverAction()
+    // {
+    //     $this->thrift->handle(
+    //         \App\Logics\Thrift\App::class,
+    //         \MicroService\SystemProcessor::class
+    //     );
+    // }
 }
