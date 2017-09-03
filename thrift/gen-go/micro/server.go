@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
-	"micro/service"
-	"micro/impl"
+	log "github.com/sirupsen/logrus"
 	"micro/config"
+	"micro/impl"
+	"micro/service"
 	"os"
 	"thrift"
-	"log"
 	"time"
 )
 
@@ -26,8 +26,8 @@ func init() {
 	year := time.Now().Format("2006-01")
 	fmt.Println(year)
 	path := fmt.Sprintf("%s/%s-%s.log", config.LOGDIR, "go.server", year)
-	file, _ := os.OpenFile(path, os.O_RDWR | os.O_CREATE | os.O_APPEND, 0666)
-	log.SetOutput(file);
+	file, _ := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	log.SetOutput(file)
 }
 
 func main() {
@@ -42,8 +42,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	processor := thrift.NewTMultiplexedProcessor();
-	processor.RegisterProcessor("app", service.NewAppProcessor(&impl.App{}));
+	processor := thrift.NewTMultiplexedProcessor()
+	processor.RegisterProcessor("app", service.NewAppProcessor(&impl.App{}))
 	//processor.RegisterProcessor("user", service.NewUserProcessor(&impl.User{}));
 	server := thrift.NewTSimpleServer4(processor, serverTransport, transportFactory, protocolFactory)
 
