@@ -12,6 +12,10 @@ const (
 	NetworkAddr = "0.0.0.0:10086"
 )
 
+func init() {
+	fmt.Println("INIT")
+}
+
 func main() {
 	//transportFactory := thrift.NewTFramedTransportFactory(thrift.NewTTransportFactory())
 	transportFactory := thrift.NewTBufferedTransportFactory(1024)
