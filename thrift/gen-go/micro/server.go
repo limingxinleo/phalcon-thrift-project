@@ -2,32 +2,17 @@ package main
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"micro/config"
 	"micro/impl"
 	"micro/service"
+	"micro/provider"
 	"os"
 	"thrift"
-	"time"
 )
 
 func init() {
-	// 判断日志目录是否存在
-	stat, err := os.Stat(config.LOGDIR)
-	if err != nil {
-		// 新建目录
-		os.Mkdir(config.LOGDIR, 0755)
-	} else {
-		if stat.Mode() != 0755 {
-			os.Chmod(config.LOGDIR, 0755)
-		}
-	}
-
-	year := time.Now().Format("2006-01")
-	fmt.Println(year)
-	path := fmt.Sprintf("%s/%s-%s.log", config.LOGDIR, "go.server", year)
-	file, _ := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-	log.SetOutput(file)
+	logger := provider.Logger{}
+	logger.Register()
 }
 
 func main() {
