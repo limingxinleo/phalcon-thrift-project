@@ -9,4 +9,5 @@ out
 gen
 
 !vendor
+vendor/*
 !vendor/vendor.json
