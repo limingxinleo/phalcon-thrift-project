@@ -4,16 +4,22 @@ import (
 	"fmt"
 	"micro/service"
 	"micro/impl"
+	"micro/config"
 	"os"
 	"thrift"
 )
 
-const (
-	NetworkAddr = "0.0.0.0:10086"
-)
-
 func init() {
-	fmt.Println("INIT")
+	// 判断日志目录是否存在
+	stat, err := os.Stat(config.LOGDIR)
+	if err != nil {
+		// 新建目录
+		os.Mkdir(config.LOGDIR, 0755)
+	} else {
+		if stat.Mode() != 0755 {
+			os.Chmod(config.LOGDIR, 0755)
+		}
+	}
 }
 
 func main() {
@@ -22,7 +28,7 @@ func main() {
 	protocolFactory := thrift.NewTBinaryProtocolFactoryDefault()
 	//protocolFactory := thrift.NewTCompactProtocolFactory()
 
-	serverTransport, err := thrift.NewTServerSocket(NetworkAddr)
+	serverTransport, err := thrift.NewTServerSocket(config.NETWORK_ADDR)
 	if err != nil {
 		fmt.Println("Error!", err)
 		os.Exit(1)
@@ -33,6 +39,6 @@ func main() {
 	//processor.RegisterProcessor("user", service.NewUserProcessor(&impl.User{}));
 	server := thrift.NewTSimpleServer4(processor, serverTransport, transportFactory, protocolFactory)
 
-	fmt.Println("thrift server in", NetworkAddr)
+	fmt.Println("thrift server in", config.NETWORK_ADDR)
 	server.Serve()
 }
