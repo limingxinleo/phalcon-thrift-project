@@ -8,5 +8,4 @@
 out
 gen
 
-!vendor/
-logs
+github.com/

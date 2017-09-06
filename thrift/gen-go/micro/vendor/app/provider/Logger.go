@@ -5,7 +5,7 @@ import (
 	"time"
 	"fmt"
 	log "github.com/sirupsen/logrus"
-	"micro/config"
+	"app/config"
 )
 
 type Logger struct {

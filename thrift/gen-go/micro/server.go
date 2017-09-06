@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"micro/config"
-	"micro/impl"
+	"app/config"
+	"app/impl"
 	"micro/service"
-	"micro/provider"
+	"app/provider"
 	"os"
 	"thrift"
 )
