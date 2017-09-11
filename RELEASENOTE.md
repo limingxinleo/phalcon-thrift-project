@@ -5,16 +5,29 @@
 - [ ] php单元测试
 
 ### Added
+* 增加脚本描述字段
+
+### Changed
+* 修改部分命名
+* 修改XConsole依赖版本
+
+### Fixed
+
+## [1.10.9]
+### Checked
+- [x] php单元测试
+
+### Added
 * 增加通用消息队列异常捕获机制
 * 增加重载、清除异常消息脚本
+* 增加XConsole依赖
 
 ### Changed
 * 默认启动Redis服务
 * 修改通用消息队列的KEY键
 * 修改Redis服务，设置uniqid
 * 修改默认消息队列，增加结果输出
-
-### Fixed
+* 重写Cli入口
 
 ## [1.10.5]
 ### Checked
