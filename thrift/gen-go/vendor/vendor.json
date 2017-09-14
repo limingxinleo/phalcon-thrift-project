@@ -9,6 +9,12 @@
 			"revisionTime": "2017-08-13T05:22:30Z"
 		},
 		{
+			"checksumSHA1": "N5D1aYGZh5OUVArhFW0voidER3A=",
+			"path": "github.com/go-sql-driver/mysql",
+			"revision": "14f4292c08c0daf077adddd5824cffc82a797ff4",
+			"revisionTime": "2017-09-14T07:49:16Z"
+		},
+		{
 			"checksumSHA1": "uZCt5CxuZY2M2Szrp+ux9UZ6m0A=",
 			"path": "github.com/limingxinleo/di",
 			"revision": "c4972742f9faae5f875553660dfe0626c0fc787a",
