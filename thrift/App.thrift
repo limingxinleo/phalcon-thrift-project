@@ -1,5 +1,5 @@
 namespace php MicroService
-namespace go micro.service
+namespace go vendor.service
 
 service App {
     string version()

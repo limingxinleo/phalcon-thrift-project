@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"app/config"
 	"app/impl"
-	"micro/service"
+	"service"
 	"app/provider"
 	"os"
 	"thrift"
