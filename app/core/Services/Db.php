@@ -1,37 +1,28 @@
 <?php
 // +----------------------------------------------------------------------
-// | DBTest.php [ WE CAN DO IT JUST THINK IT ]
+// | DB 服务 [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
 // | Copyright (c) 2016-2017 limingxinleo All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: limx <715557344@qq.com> <https://github.com/limingxinleo>
 // +----------------------------------------------------------------------
-namespace Test\Utils;
+namespace App\Core\Services;
 
-use App\Utils\DB;
-use Test\App\Utils\DB1;
-use \UnitTestCase;
-use PDO;
 use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
+use Phalcon\DI\FactoryDefault;
+use Phalcon\Config;
 use Phalcon\Events\Manager as EventsManager;
 use App\Core\Event\DbListener;
+use PDO;
 
-class DbTest extends UnitTestCase
+class Db implements ServiceProviderInterface
 {
-    public function testBaseCase()
+    public function register(FactoryDefault $di, Config $config)
     {
-        $sql = "SELECT * FROM `user`;";
-        $res = DB::query($sql);
-        $this->assertTrue(count($res) > 0);
-    }
-
-    public function testDb1Case()
-    {
-        // 增加db1 服务
-        $di = di();
-        $config = di('config');
-
-        $di->setShared('db1', function () use ($config) {
+        /**
+         * Database connection is created based in the parameters defined in the configuration file
+         */
+        $di->setShared('db', function () use ($config) {
             $db = new DbAdapter(
                 [
                     'host' => $config->database->host,
@@ -61,10 +52,6 @@ class DbTest extends UnitTestCase
             }
             return $db;
         });
-
-
-        $sql = "SELECT * FROM `user`;";
-        $res = DB1::query($sql);
-        $this->assertTrue(count($res) > 0);
     }
+
 }

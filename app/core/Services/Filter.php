@@ -1,30 +1,26 @@
 <?php
 // +----------------------------------------------------------------------
-// | 控制器基类 [ WE CAN DO IT JUST THINK IT ]
+// | Filter 服务 [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
 // | Copyright (c) 2016-2017 limingxinleo All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: limx <715557344@qq.com> <https://github.com/limingxinleo>
 // +----------------------------------------------------------------------
-namespace App\Controllers;
+namespace App\Core\Services;
 
-use App\Controllers\Traits\Response;
+use Phalcon\Config;
+use Phalcon\DI\FactoryDefault;
 
-abstract class Controller extends \Phalcon\Mvc\Controller
+class Filter implements ServiceProviderInterface
 {
-    use Response;
-
-    public function initialize()
+    public function register(FactoryDefault $di, Config $config)
     {
+        /**
+         * Phalcon\Filter
+         */
+        $di->setShared('filter', function () {
+            return new \Phalcon\Filter();
+        });
     }
 
-    public function beforeExecuteRoute()
-    {
-        // 在每一个找到的动作前执行
-    }
-
-    public function afterExecuteRoute()
-    {
-        // 在每一个找到的动作后执行
-    }
 }
