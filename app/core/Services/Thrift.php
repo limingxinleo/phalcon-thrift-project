@@ -22,6 +22,5 @@ class Thrift implements ServiceProviderInterface
             return new \App\Thrift($namespaces, $host, $port);
         });
 
-
     }
 }
