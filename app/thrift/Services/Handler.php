@@ -10,7 +10,7 @@ namespace App\Thrift\Services;
 
 use Phalcon\Di\Injectable;
 
-class Handler extends Injectable
+abstract class Handler extends Injectable
 {
 
 }
