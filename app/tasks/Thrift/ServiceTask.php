@@ -38,7 +38,6 @@ class ServiceTask extends Socket
         $protocol = new TBinaryProtocol($transport);
         $transport->open();
         $processor->process($protocol, $protocol);
-
         $server->send($fd, $transport->getBuffer());
         $transport->close();
     }
