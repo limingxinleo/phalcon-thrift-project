@@ -127,6 +127,7 @@ return new Config(
             'logicsDir' => APP_PATH . '/logics/',
             'modelsDir' => APP_PATH . '/models/',
             'tasksDir' => APP_PATH . '/tasks/',
+            'thriftDir' => APP_PATH . '/thrift/',
             'utilsDir' => APP_PATH . '/utils/',
             'viewsDir' => APP_PATH . '/views/',
 

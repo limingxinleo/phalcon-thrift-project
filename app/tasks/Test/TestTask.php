@@ -2,7 +2,7 @@
 
 namespace App\Tasks\Test;
 
-use App\Logics\Thrift\Clients\AppClient;
+use App\Thrift\Clients\AppClient;
 use Thrift\Protocol\TBinaryProtocol;
 use Thrift\Protocol\TMultiplexedProtocol;
 use Thrift\Transport\TFramedTransport;

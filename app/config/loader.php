@@ -21,6 +21,7 @@ $loader
             'App\Logics' => $config->application->logicsDir,
             'App\Models' => $config->application->modelsDir,
             'App\Tasks' => $config->application->tasksDir,
+            'App\Thrift' => $config->application->thriftDir,
             'App\Utils' => $config->application->utilsDir,
             'App\Core' => $config->application->coreDir,
         ]
