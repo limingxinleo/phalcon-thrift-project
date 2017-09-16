@@ -5,7 +5,7 @@ namespace App\Tasks\Thrift;
 use App\Tasks\System\Socket;
 use swoole_server;
 
-class MicroTask extends Socket
+class ServiceTask extends Socket
 {
     protected $port = 10086;
 
