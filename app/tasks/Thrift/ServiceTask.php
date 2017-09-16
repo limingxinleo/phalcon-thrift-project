@@ -30,8 +30,9 @@ class ServiceTask extends Socket
 
     public function receive(swoole_server $server, $fd, $reactor_id, $data)
     {
-        $handler = new AppHandler();
         $processor = new TMultiplexedProcessor();
+
+        $handler = new AppHandler();
         $processor->registerProcessor('app', new AppProcessor($handler));
 
         $transport = new TMemoryBuffer($data);

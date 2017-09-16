@@ -239,6 +239,21 @@ crontab -e
 ~~~
 schedule写法为[方法名,参数数组]，详见 [Schedule](https://github.com/limingxinleo/support-schedule)
 
+## Go&Swoole RPC 服务
+* Go
+thrift/gen-go/main.go
+~~~
+# RPC服务注册方法
+server.RegisterProcessor("app", service.NewAppProcessor(&impl.App{}));
+~~~
+
+* Swoole
+app/tasks/Thrift/Service.php
+~~~php
+$handler = new AppHandler();
+$processor->registerProcessor('app', new AppProcessor($handler));
+~~~
+
 ## 注意事项 ##
 * 利用phalcon脚本新建model时，使用phalcon model name --namespace=App\Models --extends=Model --force
 * 【BUG】如果你model里用use加载了其他类库，当你使用官方phalcon工具脚本建立model的时候，会被删除掉。这里可以使用我修改的[devtools](https://github.com/limingxinleo/phalcon-devtools.git)
