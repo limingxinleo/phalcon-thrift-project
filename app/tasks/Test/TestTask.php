@@ -3,48 +3,52 @@
 namespace App\Tasks\Test;
 
 use App\Thrift\Clients\AppClient;
-use Thrift\Protocol\TBinaryProtocol;
-use Thrift\Protocol\TMultiplexedProtocol;
-use Thrift\Transport\TFramedTransport;
-use Thrift\Transport\TSocket;
-use Thrift\Transport\THttpClient;
-use Thrift\Transport\TBufferedTransport;
-use Thrift\Exception\TException;
+use limx\phalcon\Cli\Color;
+use swoole_process;
 
 class TestTask extends \Phalcon\Cli\Task
 {
-    /**
-     * @desc   未封装Client调用方式
-     * @author limx
-     */
-    public function go1Action()
+    public function mainAction()
     {
-        $thrift = di('thrift');
+        echo Color::head('Help:') . PHP_EOL;
+        echo Color::colorize('  Thrift 通信测试脚本') . PHP_EOL . PHP_EOL;
 
-        $socket = $thrift->socket('127.0.0.1', '10086');
+        echo Color::head('Usage:') . PHP_EOL;
+        echo Color::colorize('  php run test:test@[action]', Color::FG_GREEN) . PHP_EOL . PHP_EOL;
 
-        // $transport = new TFramedTransport($socket, 1024, 1024);
-        $transport = new TBufferedTransport($socket, 1024, 1024);
-        $protocol = new TBinaryProtocol($transport);
+        echo Color::head('Actions:') . PHP_EOL;
+        echo Color::colorize('  version                         返回版本号', Color::FG_GREEN) . PHP_EOL;
+        echo Color::colorize('  client                          Client单例测试', Color::FG_GREEN) . PHP_EOL;
+        echo Color::colorize('  high                            高并发测试', Color::FG_GREEN) . PHP_EOL;
+    }
 
-        $app_protocol = new TMultiplexedProtocol($protocol, "app");
-        // $user_protocal = new TMultiplexedProtocol($protocol, "user");
+    public function highAction($params = [])
+    {
+        $tasks = 2;
+        if (isset($params[0]) && is_numeric($params[0])) {
+            $tasks = intval($params[0]);
+        }
 
-        $client = new \MicroService\AppClient($app_protocol);
+        for ($i = 0; $i < $tasks; $i++) {
+            $process = new swoole_process([$this, 'highClient']);
+            $pid = $process->start();
+            echo Color::colorize("PID=" . $pid, Color::FG_RED) . PHP_EOL;
+        }
+    }
 
-        $transport->open();
-
-        echo $client->version();
-        echo PHP_EOL;
-
-        $transport->close();
+    public function highClient()
+    {
+        $client = AppClient::getInstance();
+        for ($i = 0; $i < 10000; $i++) {
+            echo $client->version() . PHP_EOL;
+        }
     }
 
     /**
-     * @desc   新版go服务调用
+     * @desc   go服务调用
      * @author limx
      */
-    public function goAction()
+    public function versionAction()
     {
         $client = AppClient::getInstance();
 
@@ -52,21 +56,20 @@ class TestTask extends \Phalcon\Cli\Task
     }
 
     /**
-     * @desc   测试
+     * @desc   单例测试
      * @author limx
      */
-    public function testAction()
+    public function clientAction()
     {
         $client = AppClient::getInstance();
         $client = AppClient::getInstance();
 
-        dump($client->version());
+        echo Color::colorize($client->version(), Color::FG_GREEN) . PHP_EOL;
 
         $client = AppClient::getInstance();
 
-        dump($client->version());
-
-        dd(AppClient::$_instance);
+        echo Color::colorize($client->version(), Color::FG_GREEN) . PHP_EOL;
+        echo Color::colorize("实例个数：" . count(AppClient::$_instance), Color::FG_GREEN) . PHP_EOL;
     }
 
 }
