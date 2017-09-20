@@ -24,8 +24,14 @@ class ServiceTask extends Socket
     protected function events()
     {
         return [
-            'receive' => [$this, 'receive']
+            'receive' => [$this, 'receive'],
+            'WorkerStart' => [$this, 'workerStart'],
         ];
+    }
+
+    public function workerStart(swoole_server $serv, $workerId)
+    {
+        // dump(get_included_files()); // 查看不能被平滑重启的文件
     }
 
     public function receive(swoole_server $server, $fd, $reactor_id, $data)
