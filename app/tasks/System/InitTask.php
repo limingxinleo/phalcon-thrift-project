@@ -8,8 +8,8 @@
 // +----------------------------------------------------------------------
 namespace App\Tasks\System;
 
-use limx\phalcon\Cli\Color;
-use limx\phalcon\Utils\Str;
+use Xin\Cli\Color;
+use limx\Support\Str;
 use Phalcon\Cli\Task;
 
 class InitTask extends Task

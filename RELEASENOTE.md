@@ -2,12 +2,26 @@
 
 ## [Unreleased]
 ### Checked
-- [ ] php单元测试
+- [x] php单元测试
 
 ### Added
 
 ### Changed
+
+### Fixed
+
+## [2.0.0]
+### Checked
+- [x] php单元测试
+
+### Added
+* 增加x-console-color依赖
+* 增加limingxinleo\support-str 依赖
+
+### Changed
 * 移动Queue Socket WebSocket 基类
+* 删除success & error 助手方法 ！！
+* 移除limingxinleo/phalcon-utils 依赖 ！！
 
 ### Fixed
 * 修改定时脚本日志BUG
