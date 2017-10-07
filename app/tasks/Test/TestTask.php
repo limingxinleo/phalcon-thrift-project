@@ -34,6 +34,7 @@ class TestTask extends \Phalcon\Cli\Task
             $pid = $process->start();
             echo Color::colorize("PID=" . $pid, Color::FG_RED) . PHP_EOL;
         }
+        swoole_process::wait();
     }
 
     public function highClient()
