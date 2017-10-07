@@ -24,24 +24,27 @@ class TestTask extends \Phalcon\Cli\Task
 
     public function highAction($params = [])
     {
-        $tasks = 2;
+        $tasks = 10;
         if (isset($params[0]) && is_numeric($params[0])) {
             $tasks = intval($params[0]);
         }
 
+        $time = microtime(true);
         for ($i = 0; $i < $tasks; $i++) {
             $process = new swoole_process([$this, 'highClient']);
             $pid = $process->start();
             echo Color::colorize("PID=" . $pid, Color::FG_RED) . PHP_EOL;
         }
         swoole_process::wait();
+        echo Color::colorize("用时：" . (microtime(true) - $time), Color::FG_GREEN) . PHP_EOL;
     }
 
     public function highClient()
     {
         $client = AppClient::getInstance();
         for ($i = 0; $i < 10000; $i++) {
-            echo $client->version() . PHP_EOL;
+            $client->version();
+            // echo $client->version() . PHP_EOL;
         }
     }
 
