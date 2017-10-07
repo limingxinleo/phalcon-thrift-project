@@ -3,7 +3,7 @@
 namespace App\Tasks\Test;
 
 use App\Thrift\Clients\AppClient;
-use limx\phalcon\Cli\Color;
+use Xin\Cli\Color;
 use swoole_process;
 
 class TestTask extends \Phalcon\Cli\Task
