@@ -14,19 +14,18 @@ class ServiceTask extends Socket
 {
     protected $thrift;
 
+    protected $config = [
+        'pid_file' => ROOT_PATH . '/socket.pid',
+        'user' => 'nginx',
+        'group' => 'nginx',
+        'daemonize' => false,
+        // 'worker_num' => 4, // cpu核数1-4倍比较合理 不写则为cpu核数
+        'max_request' => 500, // 每个worker进程最大处理请求次数
+    ];
+
     protected $port = 10086;
 
     protected $processor;
-
-    public function onConstruct()
-    {
-        $this->thrift = di('thrift');
-
-        $this->processor = new TMultiplexedProcessor();
-
-        $handler = new AppHandler();
-        $this->processor->registerProcessor('app', new AppProcessor($handler));
-    }
 
     protected function events()
     {
@@ -39,6 +38,11 @@ class ServiceTask extends Socket
     public function workerStart(swoole_server $serv, $workerId)
     {
         // dump(get_included_files()); // 查看不能被平滑重启的文件
+        $this->thrift = di('thrift');
+
+        $this->processor = new TMultiplexedProcessor();
+        $handler = new AppHandler();
+        $this->processor->registerProcessor('app', new AppProcessor($handler));
     }
 
     public function receive(swoole_server $server, $fd, $reactor_id, $data)
