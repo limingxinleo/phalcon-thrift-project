@@ -15,7 +15,7 @@ class ServiceTask extends Socket
     protected $thrift;
 
     protected $config = [
-        'pid_file' => ROOT_PATH . '/socket.pid',
+        'pid_file' => ROOT_PATH . '/service.pid',
         'user' => 'nginx',
         'group' => 'nginx',
         'daemonize' => false,
