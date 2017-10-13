@@ -31,8 +31,16 @@ abstract class Client implements ClientInterface
 
     protected $wBufSize = 512;
 
-    private function __construct($className)
+    private function __construct($className, $config = [])
     {
+        if (isset($config['host'])) {
+            $this->host = $config['host'];
+        }
+
+        if (isset($config['port'])) {
+            $this->port = $config['port'];
+        }
+
         if (!isset($this->host)) {
             throw new ClientException('Thrift Client host is required!');
         }
@@ -70,13 +78,20 @@ abstract class Client implements ClientInterface
 
     }
 
-    public static function getInstance()
+    public static function getInstance($config = [])
     {
         $class = get_called_class();
         if (isset(static::$_instance[$class]) && static::$_instance[$class] instanceof ClientInterface) {
             return static::$_instance[$class];
         }
-        return static::$_instance[$class] = new static($class);
+        return static::$_instance[$class] = new static($class, $config);
+    }
+
+    public function flush()
+    {
+        $class = get_called_class();
+        static::$_instance[$class] = null;
+        return true;
     }
 
     public static function __callStatic($name, $arguments)
