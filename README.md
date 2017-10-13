@@ -27,9 +27,28 @@ server.RegisterProcessor("app", service.NewAppProcessor(&impl.App{}));
 
 * Swoole
 app/tasks/Thrift/Service.php
-~~~php
+~~~
 $handler = new AppHandler();
 $processor->registerProcessor('app', new AppProcessor($handler));
+~~~
+
+## 服务实现
+* Swoole
+app/thrift/Services/AppHandle.php
+~~~php
+<?php 
+namespace App\Thrift\Services;
+
+use MicroService\AppIf;
+
+class AppHandler extends Handler implements AppIf
+{
+    public function version()
+    {
+        return $this->config->version;
+    }
+
+}
 ~~~
 
 
