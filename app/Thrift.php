@@ -21,12 +21,12 @@ class Thrift
 {
     public function __construct($namespaces)
     {
-        $gen_dir = ROOT_PATH . '/thrift/gen-php';
-        $loader = new ThriftClassLoader();
-        foreach ($namespaces as $namespace) {
-            $loader->registerDefinition($namespace, $gen_dir);
-        }
-        $loader->register();
+        // $gen_dir = ROOT_PATH . '/thrift/gen-php';
+        // $loader = new ThriftClassLoader();
+        // foreach ($namespaces as $namespace) {
+        //     $loader->registerDefinition($namespace, $gen_dir);
+        // }
+        // $loader->register();
     }
 
     public function handle($handlerClass, $processorClass)

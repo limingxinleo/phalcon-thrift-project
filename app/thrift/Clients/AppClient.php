@@ -3,6 +3,7 @@
 namespace App\Thrift\Clients;
 
 use App\Thrift\Client;
+use Xin\Thrift\MicroService\AppClient as AppServiceClient;
 
 class AppClient extends Client
 {
@@ -12,7 +13,7 @@ class AppClient extends Client
 
     protected $service = 'app';
 
-    protected $clientName = \MicroService\AppClient::class;
+    protected $clientName = AppServiceClient::class;
 
 }
 

@@ -4,7 +4,7 @@ namespace App\Tasks\Thrift;
 
 use App\Core\Cli\Task\Socket;
 use App\Thrift\Services\AppHandler;
-use MicroService\AppProcessor;
+use Xin\Thrift\MicroService\AppProcessor;
 use swoole_server;
 use Thrift\Protocol\TBinaryProtocol;
 use Thrift\TMultiplexedProcessor;

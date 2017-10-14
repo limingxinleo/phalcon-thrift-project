@@ -8,7 +8,7 @@
 // +----------------------------------------------------------------------
 namespace App\Thrift\Services;
 
-use MicroService\AppIf;
+use Xin\Thrift\MicroService\AppIf;
 
 class AppHandler extends Handler implements AppIf
 {
