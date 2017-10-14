@@ -93,5 +93,71 @@ protected function beforeServerStart(swoole_server $server)
 
 ~~~
 
+## Thrift 数据类型
+1. 基本类型（括号内为对应的Java类型）：
+~~~
+bool（boolean）: 布尔类型(TRUE or FALSE)
+byte（byte）: 8位带符号整数
+i16（short）: 16位带符号整数
+i32（int）: 32位带符号整数
+i64（long）: 64位带符号整数
+double（double）: 64位浮点数
+string（String）: 采用UTF-8编码的字符串
+~~~
 
+2. 特殊类型（括号内为对应的Java类型）
+~~~
+binary（ByteBuffer）：未经过编码的字节流
+~~~
+
+3. Structs（结构）：
+~~~
+struct UserProfile {
+    1: i32 uid,
+    2: string name,
+    3: string blurb
+}
+
+struct UserProfile {
+    1: i32 uid = 1,
+    2: string name = "User1",
+    3: string blurb
+}
+~~~
+
+4. 容器，除了上面提到的基本数据类型，Thrift还支持以下容器类型：
+
+> list(java.util.ArrayList)
+> set(java.util.HashSet)
+> map（java.util.HashMap）
+
+~~~
+struct Node {
+    1: i32 id,
+    2: string name,
+    3: list<i32> subNodeList,
+    4: map<i32,string> subNodeMap,
+    5: set<i32> subNodeSet
+}
+
+struct SubNode {
+    1: i32 uid,
+    2: string name,
+    3: i32 pid
+}
+
+struct Node {
+    1: i32 uid,
+    2: string name,
+    3: list<subNode> subNodes
+}
+~~~
+
+5. 服务
+~~~
+service UserStorage {
+    void store(1: UserProfile user),
+    UserProfile retrieve(1: i32 uid)
+}
+~~~
 
