@@ -57,12 +57,10 @@ abstract class Client implements ClientInterface
             throw new ClientException('Thrift Client Name is required!');
         }
 
-        $thrift = di('thrift');
-
         $key = $this->host . ':' . $this->port;
         if (empty(static::$_protocol[$key]) || !(static::$_protocol[$key] instanceof TBinaryProtocol)) {
 
-            $socket = $thrift->socket($this->host, $this->port, $this->persist, $this->debugHandler);
+            $socket = new TSocket($this->host, $this->port, $this->persist, $this->debugHandler);
             $transport = new TBufferedTransport($socket, $this->rBufSize, $this->wBufSize);
             $protocol = new TBinaryProtocol($transport);
 

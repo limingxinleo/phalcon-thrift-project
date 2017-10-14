@@ -265,7 +265,6 @@ return new Config(
                 'session' => App\Core\Services\Session::class,
                 'modelsManager' => App\Core\Services\ModelsManager::class,
                 'logger' => App\Core\Services\Logger::class,
-                'thrift' => App\Core\Services\Thrift::class,
             ],
             'cli' => [
                 'dispatcher' => App\Core\Services\Cli\Dispatcher::class,
@@ -278,23 +277,6 @@ return new Config(
                 'view' => App\Core\Services\Mvc\View::class,
                 'dispatcher' => App\Core\Services\Mvc\Dispatcher::class,
             ],
-        ],
-
-        /*
-        |--------------------------------------------------------------------------
-        | Services
-        |--------------------------------------------------------------------------
-        |
-        | 依赖注入服务
-        |
-        */
-
-        'thrift' => [
-            'namespaces' => [
-                'MicroService',
-            ],
-            'host' => env('APP_DOMAIN', '127.0.0.1'),
-            'port' => 80,
         ],
     ]
 );

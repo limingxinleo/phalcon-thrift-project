@@ -12,7 +12,6 @@ use Thrift\Transport\TMemoryBuffer;
 
 class ServiceTask extends Socket
 {
-    protected $thrift;
 
     protected $config = [
         'pid_file' => ROOT_PATH . '/service.pid',
@@ -38,7 +37,6 @@ class ServiceTask extends Socket
     public function workerStart(swoole_server $serv, $workerId)
     {
         // dump(get_included_files()); // 查看不能被平滑重启的文件
-        $this->thrift = di('thrift');
 
         $this->processor = new TMultiplexedProcessor();
         $handler = new AppHandler();
