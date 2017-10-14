@@ -15,7 +15,8 @@
 ln -s  /your/path/to/thrift-go-phalcon-project/vendor/apache/thrift/lib/go/thrift thrift
 ~~~
 * 编译Go服务 使用 thrift -r --gen go:thrift_import=thrift App.thrift
-* 编译Php服务 使用 thrift -r --gen php:server App.thrift
+* 编译Php服务 使用 thrift -r --gen php:server,psr4 App.thrift
+
 
 ## Go&Swoole RPC 服务
 * Go

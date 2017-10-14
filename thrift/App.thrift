@@ -1,4 +1,4 @@
-namespace php MicroService
+namespace php Xin.Thrift.MicroService
 namespace go vendor.service
 
 service App {
