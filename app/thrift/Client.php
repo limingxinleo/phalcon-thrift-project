@@ -31,6 +31,10 @@ abstract class Client implements ClientInterface
 
     protected $wBufSize = 512;
 
+    protected $recvTimeoutMilliseconds;
+
+    protected $sendTimeoutMilliseconds;
+
     private function __construct($className, $config = [])
     {
         if (isset($config['host'])) {
@@ -61,6 +65,15 @@ abstract class Client implements ClientInterface
         if (empty(static::$_protocol[$key]) || !(static::$_protocol[$key] instanceof TBinaryProtocol)) {
 
             $socket = new TSocket($this->host, $this->port, $this->persist, $this->debugHandler);
+
+            if (isset($this->recvTimeoutMilliseconds)) {
+                $socket->setRecvTimeout($this->recvTimeoutMilliseconds);
+            }
+
+            if (isset($this->sendTimeoutMilliseconds)) {
+                $socket->setSendTimeout($this->sendTimeoutMilliseconds);
+            }
+
             $transport = new TBufferedTransport($socket, $this->rBufSize, $this->wBufSize);
             $protocol = new TBinaryProtocol($transport);
 
