@@ -4,23 +4,27 @@ namespace App\Tasks\Thrift;
 
 use App\Core\Cli\Task\Socket;
 use App\Thrift\Services\AppHandler;
+use App\Thrift\Services\RegisterHandler;
 use Xin\Thrift\MicroService\AppProcessor;
 use swoole_server;
 use Thrift\Protocol\TBinaryProtocol;
 use Thrift\TMultiplexedProcessor;
 use Thrift\Transport\TMemoryBuffer;
+use Xin\Thrift\Register\RegisterProcessor;
 
-class ServiceTask extends Socket
+class RegisterTask extends Socket
 {
 
     protected $config = [
-        'pid_file' => ROOT_PATH . '/service.pid',
+        'pid_file' => ROOT_PATH . '/register.pid',
         'daemonize' => false,
         // 'worker_num' => 4, // cpu核数1-4倍比较合理 不写则为cpu核数
-        'max_request' => 500, // 每个worker进程最大处理请求次数
+        'max_request' => 5, // 每个worker进程最大处理请求次数
     ];
 
-    protected $port = 10086;
+    protected $port = 11521;
+
+    protected $handler;
 
     protected $processor;
 
@@ -28,17 +32,24 @@ class ServiceTask extends Socket
     {
         return [
             'receive' => [$this, 'receive'],
-            'WorkerStart' => [$this, 'workerStart'],
+            'WorkerStart' => [$this, 'onWorkerStart'],
+            'WorkerStop' => [$this, 'onWorkerStop'],
         ];
     }
 
-    public function workerStart(swoole_server $serv, $workerId)
+    public function onWorkerStop(swoole_server $serv, $workerId)
+    {
+        $this->handler->onWorkerStop();
+    }
+
+    public function onWorkerStart(swoole_server $serv, $workerId)
     {
         // dump(get_included_files()); // 查看不能被平滑重启的文件
 
         $this->processor = new TMultiplexedProcessor();
-        $handler = new AppHandler();
-        $this->processor->registerProcessor('app', new AppProcessor($handler));
+        $this->handler = new RegisterHandler();
+        $this->handler->onWorkerStart();
+        $this->processor->registerProcessor('register', new RegisterProcessor($this->handler));
     }
 
     public function receive(swoole_server $server, $fd, $reactor_id, $data)
