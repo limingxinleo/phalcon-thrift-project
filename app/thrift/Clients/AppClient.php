@@ -15,9 +15,15 @@ class AppClient extends Client
 
     protected $clientName = AppServiceClient::class;
 
-    protected $recvTimeoutMilliseconds=10;
+    protected $recvTimeoutMilliseconds = 10;
 
     protected $sendTimeoutMilliseconds;
+
+    public static function getInstance($config = [])
+    {
+        return parent::getInstance($config);
+    }
+
 
 }
 

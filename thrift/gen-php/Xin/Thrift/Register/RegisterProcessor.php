@@ -62,4 +62,23 @@ class RegisterProcessor {
       $output->getTransport()->flush();
     }
   }
+  protected function process_heartbeat($seqid, $input, $output) {
+    $args = new \Xin\Thrift\Register\Register_heartbeat_args();
+    $args->read($input);
+    $input->readMessageEnd();
+    $result = new \Xin\Thrift\Register\Register_heartbeat_result();
+    $result->success = $this->handler_->heartbeat($args->serviceInfo);
+    $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($output, 'heartbeat', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
+    }
+    else
+    {
+      $output->writeMessageBegin('heartbeat', TMessageType::REPLY, $seqid);
+      $result->write($output);
+      $output->writeMessageEnd();
+      $output->getTransport()->flush();
+    }
+  }
 }

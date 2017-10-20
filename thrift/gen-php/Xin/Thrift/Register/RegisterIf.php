@@ -21,6 +21,11 @@ interface RegisterIf {
    * @return string
    */
   public function version();
+  /**
+   * @param \Xin\Thrift\Register\ServiceInfo $serviceInfo
+   * @return \Xin\Thrift\Register\Response
+   */
+  public function heartbeat(\Xin\Thrift\Register\ServiceInfo $serviceInfo);
 }
 
 

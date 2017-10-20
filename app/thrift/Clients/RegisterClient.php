@@ -19,5 +19,17 @@ class RegisterClient extends Client
 
     protected $sendTimeoutMilliseconds;
 
+    /**
+     * @desc
+     * @author limx
+     * @param array $config
+     * @return RegisterServiceClient $client
+     */
+    public static function getInstance($config = [])
+    {
+        return parent::getInstance($config);
+    }
+
+
 }
 

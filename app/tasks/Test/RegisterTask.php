@@ -3,8 +3,10 @@
 namespace App\Tasks\Test;
 
 use App\Thrift\Clients\RegisterClient;
+use App\Utils\Register\Sign;
 use Xin\Cli\Color;
 use swoole_process;
+use Xin\Thrift\Register\ServiceInfo;
 
 class RegisterTask extends \Phalcon\Cli\Task
 {
@@ -20,6 +22,32 @@ class RegisterTask extends \Phalcon\Cli\Task
         echo Color::colorize('  version                         返回版本号', Color::FG_GREEN) . PHP_EOL;
         echo Color::colorize('  client                          Client单例测试', Color::FG_GREEN) . PHP_EOL;
         echo Color::colorize('  high                            高并发测试', Color::FG_GREEN) . PHP_EOL;
+        echo Color::colorize('  heartbeat                       心跳测试', Color::FG_GREEN) . PHP_EOL;
+
+    }
+
+    public function heartbeatAction()
+    {
+        $client = RegisterClient::getInstance();
+        $service = new ServiceInfo();
+        $service->name = 'app';
+        $service->host = '127.0.0.1';
+        $service->port = 10086;
+        $service->nonce = 'xxx';
+        $service->isService = true;
+        $service->sign = Sign::sign(Sign::serviceInfoToArray($service));
+        for ($i = 0; $i < 10; $i++) {
+            $res = $client->heartbeat($service);
+            if ($res->success) {
+                foreach ($res->services as $service) {
+                    dump($service->name);
+                }
+            } else {
+                dump($res->message);
+            }
+            sleep(1);
+            // echo $client->version() . PHP_EOL;
+        }
     }
 
     public function highAction($params = [])
