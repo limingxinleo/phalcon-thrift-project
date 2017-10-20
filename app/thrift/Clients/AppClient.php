@@ -19,6 +19,12 @@ class AppClient extends Client
 
     protected $sendTimeoutMilliseconds;
 
+    /**
+     * @desc
+     * @author limx
+     * @param array $config
+     * @return AppServiceClient
+     */
     public static function getInstance($config = [])
     {
         return parent::getInstance($config);
