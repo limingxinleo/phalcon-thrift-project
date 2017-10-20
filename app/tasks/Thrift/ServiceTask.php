@@ -9,6 +9,7 @@ use App\Utils\Redis;
 use App\Utils\Register\Sign;
 use limx\Support\Str;
 use Phalcon\Logger\AdapterInterface;
+use Xin\Phalcon\Cli\Traits\Input;
 use Xin\Phalcon\Logger\Sys;
 use Xin\Thrift\MicroService\AppProcessor;
 use swoole_server;
@@ -20,6 +21,7 @@ use swoole_process;
 
 class ServiceTask extends Socket
 {
+    use Input;
 
     protected $config = [
         'pid_file' => ROOT_PATH . '/service.pid',
@@ -86,6 +88,14 @@ class ServiceTask extends Socket
     protected function beforeServerStart(swoole_server $server)
     {
         parent::beforeServerStart($server);
+        
+        if ($this->option('daemonize')) {
+            $this->config['daemonize'] = true;
+        }
+
+        // 重置参数
+        $server->set($this->config);
+
         if (env('REGISTER_CENTER_OPEN', false)) {
             $this->registryHeartbeat($server, 'app');
         }
