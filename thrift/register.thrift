@@ -4,7 +4,7 @@ namespace go vendor.register
 struct Response {
     1: bool                 success,
     2: string               message,
-    3: list<ServiceInfo>    services,
+    3: map<string,ServiceInfo> services,
 }
 struct ServiceInfo {
     1: string   name,

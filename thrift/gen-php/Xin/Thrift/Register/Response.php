@@ -29,7 +29,7 @@ class Response {
    */
   public $message = null;
   /**
-   * @var \Xin\Thrift\Register\ServiceInfo[]
+   * @var array
    */
   public $services = null;
 
@@ -46,9 +46,13 @@ class Response {
           ),
         3 => array(
           'var' => 'services',
-          'type' => TType::LST,
-          'etype' => TType::STRUCT,
-          'elem' => array(
+          'type' => TType::MAP,
+          'ktype' => TType::STRING,
+          'vtype' => TType::STRUCT,
+          'key' => array(
+            'type' => TType::STRING,
+          ),
+          'val' => array(
             'type' => TType::STRUCT,
             'class' => '\Xin\Thrift\Register\ServiceInfo',
             ),
@@ -102,19 +106,22 @@ class Response {
           }
           break;
         case 3:
-          if ($ftype == TType::LST) {
+          if ($ftype == TType::MAP) {
             $this->services = array();
             $_size0 = 0;
-            $_etype3 = 0;
-            $xfer += $input->readListBegin($_etype3, $_size0);
+            $_ktype1 = 0;
+            $_vtype2 = 0;
+            $xfer += $input->readMapBegin($_ktype1, $_vtype2, $_size0);
             for ($_i4 = 0; $_i4 < $_size0; ++$_i4)
             {
-              $elem5 = null;
-              $elem5 = new \Xin\Thrift\Register\ServiceInfo();
-              $xfer += $elem5->read($input);
-              $this->services []= $elem5;
+              $key5 = '';
+              $val6 = new \Xin\Thrift\Register\ServiceInfo();
+              $xfer += $input->readString($key5);
+              $val6 = new \Xin\Thrift\Register\ServiceInfo();
+              $xfer += $val6->read($input);
+              $this->services[$key5] = $val6;
             }
-            $xfer += $input->readListEnd();
+            $xfer += $input->readMapEnd();
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -146,16 +153,17 @@ class Response {
       if (!is_array($this->services)) {
         throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
       }
-      $xfer += $output->writeFieldBegin('services', TType::LST, 3);
+      $xfer += $output->writeFieldBegin('services', TType::MAP, 3);
       {
-        $output->writeListBegin(TType::STRUCT, count($this->services));
+        $output->writeMapBegin(TType::STRING, TType::STRUCT, count($this->services));
         {
-          foreach ($this->services as $iter6)
+          foreach ($this->services as $kiter7 => $viter8)
           {
-            $xfer += $iter6->write($output);
+            $xfer += $output->writeString($kiter7);
+            $xfer += $viter8->write($output);
           }
         }
-        $output->writeListEnd();
+        $output->writeMapEnd();
       }
       $xfer += $output->writeFieldEnd();
     }

@@ -42,8 +42,8 @@ class RegisterTask extends \Phalcon\Cli\Task
                 if (empty($res->services)) {
                     echo Color::error("服务列表为空") . PHP_EOL;
                 }
-                foreach ($res->services as $service) {
-                    echo Color::colorize("服务" . $service->name, Color::FG_GREEN) . PHP_EOL;
+                foreach ($res->services as $key => $service) {
+                    echo Color::colorize("服务{$key}:" . $service->name, Color::FG_GREEN) . PHP_EOL;
                 }
             } else {
                 echo Color::error($res->message) . PHP_EOL;
