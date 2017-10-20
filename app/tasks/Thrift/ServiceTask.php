@@ -76,7 +76,11 @@ class ServiceTask extends Socket
                     foreach ($result->services as $key => $item) {
                         $serviceJson = json_encode(Sign::serviceInfoToArray($item));
                         $logger->info($serviceJson);
-                        Redis::hset($name, $key, $serviceJson);
+                        Redis::hset(
+                            env('REGISTER_CENTER_SERVICE_LIST_KEY', 'phalcon:register:service:list'),
+                            $key,
+                            $serviceJson
+                        );
                     }
                 }
             });
@@ -88,7 +92,7 @@ class ServiceTask extends Socket
     protected function beforeServerStart(swoole_server $server)
     {
         parent::beforeServerStart($server);
-        
+
         if ($this->option('daemonize')) {
             $this->config['daemonize'] = true;
         }
