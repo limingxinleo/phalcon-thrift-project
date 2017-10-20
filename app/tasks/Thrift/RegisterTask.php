@@ -12,6 +12,11 @@ use Thrift\TMultiplexedProcessor;
 use Thrift\Transport\TMemoryBuffer;
 use Xin\Thrift\Register\RegisterProcessor;
 
+/**
+ * Class RegisterTask
+ * @package App\Tasks\Thrift
+ * @property RegisterHandler $handle
+ */
 class RegisterTask extends Socket
 {
 
@@ -24,6 +29,7 @@ class RegisterTask extends Socket
 
     protected $port = 11521;
 
+    /** @var RegisterHandler */
     protected $handler;
 
     protected $processor;

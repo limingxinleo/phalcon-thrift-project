@@ -6,7 +6,7 @@
 // +----------------------------------------------------------------------
 // | Author: limx <715557344@qq.com> <https://github.com/limingxinleo>
 // +----------------------------------------------------------------------
-namespace App\Core\Registry\Persistent;
+namespace App\Core\Register\Persistent;
 
 use Xin\Redis as Client;
 
@@ -21,7 +21,7 @@ class Redis
         $auth = $config->redis->auth;
         $db = $config->redis->index;
 
-        return Client::getInstance($host, $auth, $db, $port, 'registry');
+        return Client::getInstance($host, $auth, $db, $port, 'register');
     }
 
 }

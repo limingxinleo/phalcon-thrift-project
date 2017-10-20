@@ -9,6 +9,7 @@
 namespace App\Thrift\Services;
 
 use App\Core\Register\RegisterInput;
+use App\Core\Register\Persistent\Redis;
 use Xin\Thrift\Register\RegisterIf;
 use Xin\Thrift\Register\ServiceInfo;
 use Xin\Thrift\Register\Response;
@@ -16,6 +17,8 @@ use Xin\Thrift\Register\Response;
 class RegisterHandler extends Handler implements RegisterIf
 {
     public $services = [];
+
+    public $persistentKey = 'phalcon:register:service:persistent';
 
     public function version()
     {
@@ -56,11 +59,21 @@ class RegisterHandler extends Handler implements RegisterIf
 
     public function onWorkerStart()
     {
-        echo 'onWorkerStart' . PHP_EOL;
+        if (env('REGISTER_CENTER_PERSISTENT', false)) {
+            $client = Redis::getInstance();
+            $services = $client->get($this->persistentKey);
+            if ($services = unserialize($services)) {
+                $this->services = $services;
+            }
+        }
+
     }
 
     public function onWorkerStop()
     {
-        echo 'onWorkerStop';
+        if (env('REGISTER_CENTER_PERSISTENT', false)) {
+            $client = Redis::getInstance();
+            $client->set($this->persistentKey, serialize($this->services));
+        }
     }
 }

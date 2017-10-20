@@ -36,17 +36,18 @@ class RegisterTask extends \Phalcon\Cli\Task
         $service->nonce = 'xxx';
         $service->isService = true;
         $service->sign = Sign::sign(Sign::serviceInfoToArray($service));
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 12; $i++) {
             $res = $client->heartbeat($service);
             if ($res->success) {
+                if (empty($res->services)) {
+                    echo Color::error("服务列表为空") . PHP_EOL;
+                }
                 foreach ($res->services as $service) {
-                    dump($service->name);
+                    echo Color::colorize("服务" . $service->name, Color::FG_GREEN) . PHP_EOL;
                 }
             } else {
-                dump($res->message);
+                echo Color::error($res->message) . PHP_EOL;
             }
-            sleep(1);
-            // echo $client->version() . PHP_EOL;
         }
     }
 
