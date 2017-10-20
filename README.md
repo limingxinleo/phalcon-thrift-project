@@ -53,7 +53,11 @@ class AppHandler extends Handler implements AppIf
 ~~~
 
 ## 服务发现
-配合[注册中心](https://github.com/limingxinleo/service-registry-swoole-phalcon.git)一起使用
+1. 项目本人已内置基于Thrift的注册中心功能
+暂只实现Swoole服务注册中心
+Go服务注册中心 敬请期待！！
+
+2. 或者配合[注册中心](https://github.com/limingxinleo/service-registry-swoole-phalcon.git)一起使用
 app/tasks/Thrift/ServiceTask.php
 ~~~
 protected function beforeServerStart(swoole_server $server)
@@ -93,6 +97,7 @@ protected function beforeServerStart(swoole_server $server)
 }
 
 ~~~
+
 
 ## Thrift 数据类型
 1. 基本类型（括号内为对应的Java类型）：
