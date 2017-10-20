@@ -72,17 +72,24 @@ class ServiceTask extends Socket
 
                 if ($result->success === false) {
                     $logger->error($result->message);
-                } else {
-                    foreach ($result->services as $key => $item) {
-                        $serviceJson = json_encode(Sign::serviceInfoToArray($item));
-                        $logger->info($serviceJson);
-                        Redis::hset(
-                            env('REGISTER_CENTER_SERVICE_LIST_KEY', 'phalcon:register:service:list'),
-                            $key,
-                            $serviceJson
-                        );
-                    }
+                    return;
                 }
+
+                if (!isset($result->services)) {
+                    $logger->error("服务列表为空！");
+                    return;
+                }
+                
+                foreach ($result->services as $key => $item) {
+                    $serviceJson = json_encode(Sign::serviceInfoToArray($item));
+                    $logger->info($serviceJson);
+                    Redis::hset(
+                        env('REGISTER_CENTER_SERVICE_LIST_KEY', 'phalcon:register:service:list'),
+                        $key,
+                        $serviceJson
+                    );
+                }
+
             });
         });
 
