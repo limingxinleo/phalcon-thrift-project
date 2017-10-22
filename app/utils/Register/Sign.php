@@ -15,17 +15,18 @@ class Sign
 
     public static function sign($input = [])
     {
+        $config = di('config')->thrift->register;
         unset($input['sign']);
         ksort($input);
         $data = http_build_query($input);
-        $key = env('REGISTER_CENTER_KEY', 'helloworld');
 
-        return md5(md5($data) . $key);
+        return md5(md5($data) . $config->key);
     }
 
     public static function verify($input, $sign)
     {
-        if (env('REGISTER_CENTER_SIGN_VERIFY', false)) {
+        $isVerify = di('config')->thrift->register->signVerify;
+        if ($isVerify) {
 
             unset($input['sign']);
             return static::sign($input) === $sign;

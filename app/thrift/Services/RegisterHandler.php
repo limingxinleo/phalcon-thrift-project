@@ -59,7 +59,8 @@ class RegisterHandler extends Handler implements RegisterIf
 
     public function onWorkerStart()
     {
-        if (env('REGISTER_CENTER_PERSISTENT', false)) {
+        $isPersistent = di('config')->thrift->register->persistent;
+        if ($isPersistent) {
             $client = Redis::getInstance();
             $services = $client->get($this->persistentKey);
             if ($services = unserialize($services)) {
@@ -71,7 +72,8 @@ class RegisterHandler extends Handler implements RegisterIf
 
     public function onWorkerStop()
     {
-        if (env('REGISTER_CENTER_PERSISTENT', false)) {
+        $isPersistent = di('config')->thrift->register->persistent;
+        if ($isPersistent) {
             $client = Redis::getInstance();
             $client->set($this->persistentKey, serialize($this->services));
         }
