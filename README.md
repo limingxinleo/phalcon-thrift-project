@@ -27,6 +27,8 @@ export GOROOT='/usr/local/go/1.8.3' # 没有文件夹则新建
 export GOPATH='/usr/local/go/libs/' # 没有文件夹则新建
 export PATH=$GOROOT/bin:$PATH
 $ go get -u github.com/kardianos/govendor
+$ cd /usr/local/go/libs/src/github.com/kardianos/govendor/
+$ go build
 $ cd /usr/local/bin
 $ ln -s /usr/local/go/libs/src/github.com/kardianos/govendor/govendor govendor
 ~~~
