@@ -21,9 +21,10 @@ ln -s  /your/path/to/thrift-go-phalcon-project/vendor/apache/thrift/lib/go/thrif
 ~~~
 从GO官网下载编译好的压缩包 例如 go1.8.3.linux-amd64.tar.gz
 $ tar -xzf go1.8.3.linux-amd64.tar.gz
-$ mv go /usr/local/go
+$ mv go /usr/local/go/1.8.3
 $ vim /etc/profile 
-export GOPATH='/usr/local/go/libs/'
+export GOROOT='/usr/local/go/1.8.3' # 没有文件夹则新建
+export GOPATH='/usr/local/go/libs/' # 没有文件夹则新建
 export PATH=$GOROOT/bin:$PATH
 $ go get -u github.com/kardianos/govendor
 $ cd /usr/local/bin
