@@ -22,6 +22,7 @@ func Usage() {
   flag.PrintDefaults()
   fmt.Fprintln(os.Stderr, "\nFunctions:")
   fmt.Fprintln(os.Stderr, "  string version()")
+  fmt.Fprintln(os.Stderr, "  Response heartbeat(ServiceInfo serviceInfo)")
   fmt.Fprintln(os.Stderr)
   os.Exit(0)
 }
@@ -122,6 +123,31 @@ func main() {
       flag.Usage()
     }
     fmt.Print(client.Version())
+    fmt.Print("\n")
+    break
+  case "heartbeat":
+    if flag.NArg() - 1 != 1 {
+      fmt.Fprintln(os.Stderr, "Heartbeat requires 1 args")
+      flag.Usage()
+    }
+    arg8 := flag.Arg(1)
+    mbTrans9 := thrift.NewTMemoryBufferLen(len(arg8))
+    defer mbTrans9.Close()
+    _, err10 := mbTrans9.WriteString(arg8)
+    if err10 != nil {
+      Usage()
+      return
+    }
+    factory11 := thrift.NewTSimpleJSONProtocolFactory()
+    jsProt12 := factory11.GetProtocol(mbTrans9)
+    argvalue0 := register.NewServiceInfo()
+    err13 := argvalue0.Read(jsProt12)
+    if err13 != nil {
+      Usage()
+      return
+    }
+    value0 := argvalue0
+    fmt.Print(client.Heartbeat(value0))
     fmt.Print("\n")
     break
   case "":
