@@ -17,6 +17,20 @@ ln -s  /your/path/to/thrift-go-phalcon-project/vendor/apache/thrift/lib/go/thrif
 * 编译Go服务 使用 thrift -r --gen go:thrift_import=thrift App.thrift
 * 编译Php服务 使用 thrift -r --gen php:server,psr4 App.thrift
 
+* Go服务安装
+~~~
+从GO官网下载编译好的压缩包 例如 go1.8.3.linux-amd64.tar.gz
+$ tar -xzf go1.8.3.linux-amd64.tar.gz
+$ mv go /usr/local/go
+$ vim /etc/profile 
+export GOPATH='/usr/local/go/libs/'
+export PATH=$GOROOT/bin:$PATH
+$ go get -u github.com/kardianos/govendor
+$ cd /usr/local/bin
+$ ln -s /usr/local/go/libs/src/github.com/kardianos/govendor/govendor govendor
+~~~
+
+
 
 ## Go&Swoole RPC 服务
 * Go
