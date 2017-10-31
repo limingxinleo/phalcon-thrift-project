@@ -10,14 +10,19 @@
 [wiki](https://github.com/limingxinleo/simple-subcontrollers.phalcon/wiki)
 
 ## 安装
-* 使用Composer安装Thrift扩展后，把go的扩展包拷贝到GOPATH中(或建立软连接)。
+1. 安装项目
+~~~
+composer create-project limingxinleo/thrift-go-phalcon-project
+~~~
+2. 使用Composer安装Thrift扩展后，把go的扩展包拷贝到GOPATH中(或建立软连接)。
 ~~~
 ln -s  /your/path/to/thrift-go-phalcon-project/vendor/apache/thrift/lib/go/thrift thrift
 ~~~
-* 编译Go服务 使用 thrift -r --gen go:thrift_import=thrift App.thrift
-* 编译Php服务 使用 thrift -r --gen php:server,psr4 App.thrift
+3. 编译服务 
+Go 使用 thrift -r --gen go:thrift_import=thrift App.thrift
+Php 使用 thrift -r --gen php:server,psr4 App.thrift
 
-* Go服务安装
+4. Go服务安装
 ~~~
 从GO官网下载编译好的压缩包 例如 go1.8.3.linux-amd64.tar.gz
 $ tar -xzf go1.8.3.linux-amd64.tar.gz
@@ -32,8 +37,6 @@ $ go build
 $ cd /usr/local/bin
 $ ln -s /usr/local/go/libs/src/github.com/kardianos/govendor/govendor govendor
 ~~~
-
-
 
 ## Go&Swoole RPC 服务
 * Go
