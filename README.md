@@ -19,8 +19,8 @@ composer create-project limingxinleo/thrift-go-phalcon-project
 ln -s  /your/path/to/thrift-go-phalcon-project/vendor/apache/thrift/lib/go/thrift thrift
 ~~~
 3. 编译服务 
-Go 使用 thrift -r --gen go:thrift_import=thrift App.thrift
-Php 使用 thrift -r --gen php:server,psr4 App.thrift
+- Go 使用 thrift -r --gen go:thrift_import=thrift App.thrift
+- Php 使用 thrift -r --gen php:server,psr4 App.thrift
 
 4. Go服务安装
 ~~~
