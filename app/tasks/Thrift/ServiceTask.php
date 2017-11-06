@@ -7,8 +7,8 @@ use App\Thrift\Clients\RegisterClient;
 use App\Thrift\Services\AppHandler;
 use App\Utils\Redis;
 use App\Utils\Register\Sign;
-use limx\Support\Str;
 use Phalcon\Logger\AdapterInterface;
+use Phalcon\Text;
 use Xin\Phalcon\Cli\Traits\Input;
 use Xin\Phalcon\Logger\Sys;
 use Xin\Thrift\MicroService\AppProcessor;
@@ -65,7 +65,7 @@ class ServiceTask extends Socket
                 $service->name = $name;
                 $service->host = $this->host;
                 $service->port = $this->port;
-                $service->nonce = Str::random(16);
+                $service->nonce = Text::random(Text::RANDOM_ALNUM, 16);
                 $service->isService = true;
                 $service->sign = Sign::sign(Sign::serviceInfoToArray($service));
 
