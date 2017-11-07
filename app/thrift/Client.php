@@ -11,8 +11,6 @@ abstract class Client implements ClientInterface
 {
     public static $_instance = [];
 
-    public static $_protocol = [];
-
     protected $host;
 
     protected $port;
@@ -61,28 +59,27 @@ abstract class Client implements ClientInterface
             throw new ClientException('Thrift Client Name is required!');
         }
 
-        $key = $this->host . ':' . $this->port;
-        if (empty(static::$_protocol[$key]) || !(static::$_protocol[$key] instanceof TBinaryProtocol)) {
+        $socket = new TSocket($this->host, $this->port, $this->persist, $this->debugHandler);
 
-            $socket = new TSocket($this->host, $this->port, $this->persist, $this->debugHandler);
-
-            if (isset($this->recvTimeoutMilliseconds)) {
-                $socket->setRecvTimeout($this->recvTimeoutMilliseconds);
-            }
-
-            if (isset($this->sendTimeoutMilliseconds)) {
-                $socket->setSendTimeout($this->sendTimeoutMilliseconds);
-            }
-
-            $transport = new TBufferedTransport($socket, $this->rBufSize, $this->wBufSize);
-            $protocol = new TBinaryProtocol($transport);
-
-            static::$_protocol[$key] = $protocol;
-
-            $transport->open();
+        if (isset($this->recvTimeoutMilliseconds)) {
+            $socket->setRecvTimeout($this->recvTimeoutMilliseconds);
         }
 
-        $protocol = new TMultiplexedProtocol(static::$_protocol[$key], $this->service);
+        if (isset($this->sendTimeoutMilliseconds)) {
+            $socket->setSendTimeout($this->sendTimeoutMilliseconds);
+        }
+
+        // 创建通讯对象
+        $transport = new TBufferedTransport($socket, $this->rBufSize, $this->wBufSize);
+
+        // 创建Binary协议对象
+        $protocol = new TBinaryProtocol($transport);
+
+        // 打开通讯通道
+        $transport->open();
+
+        // 创建多元协议对象
+        $protocol = new TMultiplexedProtocol($protocol, $this->service);
 
         $class = $this->clientName;
         $this->client = new $class($protocol);
