@@ -26,7 +26,6 @@ return new Config(
         | This value is version for this project.
         |
         */
-
         'version' => 'v1.1.6',
 
         /*
@@ -135,7 +134,6 @@ return new Config(
             'coreDir' => APP_PATH . '/core/',
             'jobsDir' => APP_PATH . '/jobs/',
             'libraryDir' => APP_PATH . '/library/',
-            'logicsDir' => APP_PATH . '/logics/',
             'middlewareDir' => APP_PATH . '/middleware/',
             'modelsDir' => APP_PATH . '/models/',
             'tasksDir' => APP_PATH . '/tasks/',
