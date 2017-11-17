@@ -16,7 +16,7 @@ use Thrift\Protocol\TBinaryProtocolAccelerated;
 use Thrift\Exception\TApplicationException;
 
 
-class App_version_result {
+class App_test_result {
   static $_TSPEC;
 
   /**
@@ -53,7 +53,7 @@ class App_version_result {
   }
 
   public function getName() {
-    return 'App_version_result';
+    return 'App_test_result';
   }
 
   public function read($input)
@@ -98,7 +98,7 @@ class App_version_result {
 
   public function write($output) {
     $xfer = 0;
-    $xfer += $output->writeStructBegin('App_version_result');
+    $xfer += $output->writeStructBegin('App_test_result');
     if ($this->success !== null) {
       $xfer += $output->writeFieldBegin('success', TType::STRING, 0);
       $xfer += $output->writeString($this->success);

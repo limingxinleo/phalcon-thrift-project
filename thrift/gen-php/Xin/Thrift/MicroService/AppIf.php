@@ -19,8 +19,14 @@ use Thrift\Exception\TApplicationException;
 interface AppIf {
   /**
    * @return string
+   * @throws \Xin\Thrift\MicroService\ThriftException
    */
   public function version();
+  /**
+   * @return string
+   * @throws \Xin\Thrift\MicroService\ThriftException
+   */
+  public function testException();
 }
 
 

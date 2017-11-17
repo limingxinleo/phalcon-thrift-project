@@ -18,8 +18,16 @@ class TestTask extends \Phalcon\Cli\Task
 
         echo Color::head('Actions:') . PHP_EOL;
         echo Color::colorize('  version                         返回版本号', Color::FG_GREEN) . PHP_EOL;
+        echo Color::colorize('  exception                       测试异常抛出', Color::FG_GREEN) . PHP_EOL;
         echo Color::colorize('  client                          Client单例测试', Color::FG_GREEN) . PHP_EOL;
         echo Color::colorize('  high                            高并发测试', Color::FG_GREEN) . PHP_EOL;
+    }
+
+    public function exceptionAction()
+    {
+        $client = AppClient::getInstance();
+
+        dump($client->testException());
     }
 
     public function highAction($params = [])

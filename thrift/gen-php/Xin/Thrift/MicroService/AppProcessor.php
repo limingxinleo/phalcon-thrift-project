@@ -48,7 +48,11 @@ class AppProcessor {
     $args->read($input);
     $input->readMessageEnd();
     $result = new \Xin\Thrift\MicroService\App_version_result();
-    $result->success = $this->handler_->version();
+    try {
+      $result->success = $this->handler_->version();
+    } catch (\Xin\Thrift\MicroService\ThriftException $ex) {
+      $result->ex = $ex;
+    }
     $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -57,6 +61,29 @@ class AppProcessor {
     else
     {
       $output->writeMessageBegin('version', TMessageType::REPLY, $seqid);
+      $result->write($output);
+      $output->writeMessageEnd();
+      $output->getTransport()->flush();
+    }
+  }
+  protected function process_testException($seqid, $input, $output) {
+    $args = new \Xin\Thrift\MicroService\App_testException_args();
+    $args->read($input);
+    $input->readMessageEnd();
+    $result = new \Xin\Thrift\MicroService\App_testException_result();
+    try {
+      $result->success = $this->handler_->testException();
+    } catch (\Xin\Thrift\MicroService\ThriftException $ex) {
+      $result->ex = $ex;
+    }
+    $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($output, 'testException', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
+    }
+    else
+    {
+      $output->writeMessageBegin('testException', TMessageType::REPLY, $seqid);
       $result->write($output);
       $output->writeMessageEnd();
       $output->getTransport()->flush();
