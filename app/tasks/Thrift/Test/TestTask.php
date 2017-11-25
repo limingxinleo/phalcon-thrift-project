@@ -26,8 +26,12 @@ class TestTask extends \Phalcon\Cli\Task
     public function exceptionAction()
     {
         $client = AppClient::getInstance();
-
-        dump($client->testException());
+        try {
+            dump($client->testException());
+        } catch (\Exception $ex) {
+            dump($ex->getCode());
+            dump($ex->getMessage());
+        }
     }
 
     public function highAction($params = [])
