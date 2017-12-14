@@ -81,7 +81,7 @@ class UserMigration_100 extends Migration
                     new Column(
                         'created_at',
                         [
-                            'type' => Column::TYPE_TIMESTAMP,
+                            'type' => Column::TYPE_DATETIME,
                             'size' => 1,
                             'after' => 'role_id'
                         ]
@@ -89,7 +89,7 @@ class UserMigration_100 extends Migration
                     new Column(
                         'updated_at',
                         [
-                            'type' => Column::TYPE_TIMESTAMP,
+                            'type' => Column::TYPE_DATETIME,
                             'size' => 1,
                             'after' => 'created_at'
                         ]
@@ -102,7 +102,7 @@ class UserMigration_100 extends Migration
                 ],
                 'options' => [
                     'TABLE_TYPE' => 'BASE TABLE',
-                    'AUTO_INCREMENT' => '2',
+                    'AUTO_INCREMENT' => '1',
                     'ENGINE' => 'InnoDB',
                     'TABLE_COLLATION' => 'utf8_unicode_ci'
                 ],

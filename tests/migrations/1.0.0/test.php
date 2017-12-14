@@ -6,9 +6,9 @@ use Phalcon\Db\Reference;
 use Phalcon\Mvc\Model\Migration;
 
 /**
- * Class RoleMigration_100
+ * Class TestMigration_100
  */
-class RoleMigration_100 extends Migration
+class TestMigration_100 extends Migration
 {
     /**
      * Define the table structure
@@ -17,7 +17,7 @@ class RoleMigration_100 extends Migration
      */
     public function morph()
     {
-        $this->morphTable('role', [
+        $this->morphTable('test', [
                 'columns' => [
                     new Column(
                         'id',
@@ -26,7 +26,7 @@ class RoleMigration_100 extends Migration
                             'unsigned' => true,
                             'notNull' => true,
                             'autoIncrement' => true,
-                            'size' => 10,
+                            'size' => 11,
                             'first' => true
                         ]
                     ),
@@ -41,19 +41,13 @@ class RoleMigration_100 extends Migration
                         ]
                     ),
                     new Column(
-                        'created_at',
+                        'age',
                         [
-                            'type' => Column::TYPE_DATETIME,
-                            'size' => 1,
+                            'type' => Column::TYPE_INTEGER,
+                            'default' => "0",
+                            'notNull' => true,
+                            'size' => 4,
                             'after' => 'name'
-                        ]
-                    ),
-                    new Column(
-                        'updated_at',
-                        [
-                            'type' => Column::TYPE_DATETIME,
-                            'size' => 1,
-                            'after' => 'created_at'
                         ]
                     )
                 ],
