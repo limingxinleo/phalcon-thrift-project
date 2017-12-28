@@ -3,21 +3,13 @@
 namespace App\Tasks\Thrift;
 
 use App\Core\Cli\Task\Socket;
-use App\Thrift\Clients\RegisterClient;
 use App\Thrift\Services\AppHandler;
-use App\Utils\Redis;
-use App\Utils\Register\Sign;
-use Phalcon\Logger\AdapterInterface;
-use Phalcon\Text;
 use Xin\Phalcon\Cli\Traits\Input;
-use Xin\Phalcon\Logger\Sys;
 use Xin\Thrift\MicroService\AppProcessor;
 use swoole_server;
 use Thrift\Protocol\TBinaryProtocol;
 use Thrift\TMultiplexedProcessor;
 use Thrift\Transport\TMemoryBuffer;
-use Xin\Thrift\Register\ServiceInfo;
-use swoole_process;
 
 class ServiceTask extends Socket
 {
