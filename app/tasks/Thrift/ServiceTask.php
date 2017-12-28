@@ -29,61 +29,17 @@ class ServiceTask extends Socket
 
     protected $processor;
 
+    public function onConstruct()
+    {
+        $this->port = $this->config->thrift->service->port;
+    }
+
     protected function events()
     {
         return [
             'receive' => [$this, 'receive'],
             'WorkerStart' => [$this, 'workerStart'],
         ];
-    }
-
-    /**
-     * @desc   服务注册
-     * @author limx
-     * @param swoole_server $server
-     * @param               $name
-     */
-    protected function registryHeartbeat(swoole_server $server, $name)
-    {
-        $worker = new swoole_process(function (swoole_process $worker) use ($name) {
-            $config = di('config')->thrift;
-            $client = RegisterClient::getInstance([
-                'host' => $config->register->host,
-                'port' => $config->register->port,
-            ]);
-            /** @var AdapterInterface $logger */
-            $logger = di('logger')->getLogger('heart', Sys::LOG_ADAPTER_FILE, ['dir' => 'system']);
-            swoole_timer_tick(5000, function () use ($client, $logger, $name, $config) {
-                $service = new ServiceInfo();
-                $service->name = $name;
-                $service->host = $this->host;
-                $service->port = $this->port;
-                $service->nonce = Text::random(Text::RANDOM_ALNUM, 16);
-                $service->isService = true;
-                $service->sign = Sign::sign(Sign::serviceInfoToArray($service));
-
-                $result = $client->heartbeat($service);
-
-                if ($result->success === false) {
-                    $logger->error($result->message);
-                    return;
-                }
-
-                if (!isset($result->services)) {
-                    $logger->error("服务列表为空！");
-                    return;
-                }
-
-                foreach ($result->services as $key => $item) {
-                    $serviceJson = json_encode(Sign::serviceInfoToArray($item));
-                    $logger->info($serviceJson);
-                    Redis::hset($config->service->listKey, $key, $serviceJson);
-                }
-
-            });
-        });
-
-        $server->addProcess($worker);
     }
 
     protected function beforeServerStart(swoole_server $server)
@@ -96,11 +52,6 @@ class ServiceTask extends Socket
 
         // 重置参数
         $server->set($config);
-
-        $isOpen = di('config')->thrift->register->open;
-        if ($isOpen) {
-            $this->registryHeartbeat($server, 'app');
-        }
     }
 
 
@@ -125,11 +76,8 @@ class ServiceTask extends Socket
 
     protected function getConfig()
     {
-        return [
-            'pid_file' => ROOT_PATH . '/service.pid',
-            'daemonize' => false,
-            'max_request' => 500, // 每个worker进程最大处理请求次数
-        ];
+        $config = $this->config->thrift->service->config;
+        return $config->toArray();
     }
 }
 

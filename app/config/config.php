@@ -296,30 +296,19 @@ return new Config(
         | THRIFT Environment
         |--------------------------------------------------------------------------
         |
-        | register          : 注册中心相关配置
-        |  ├─ key           : 签名用KEY
-        |  ├─ signVerify    : 是否需要验证签名
-        |  ├─ open          : 是否注册到注册中心
-        |  ├─ host          : 注册中心地址
-        |  ├─ port          : 注册中心端口号
-        |  └─ persistent    : 是否对服务列表持久化
-        |
         | service: 服务相关配置
-        |  ├─ listKey       : 缓存服务用的Redis Key
-        |  └─
+        |  ├─ port          : Thrift微服务端口号
+        |  └─ config        : Thrift微服务配置
         |
         */
         'thrift' => [
-            'register' => [
-                'key' => env('REGISTER_CENTER_KEY', 'helloworld'),
-                'signVerify' => env('REGISTER_CENTER_SIGN_VERIFY', false),
-                'open' => env('REGISTER_CENTER_OPEN', false),
-                'host' => env('REGISTER_CENTER_HOST', '127.0.0.1'),
-                'port' => env('REGISTER_CENTER_PORT', 11521),
-                'persistent' => env('REGISTER_CENTER_PERSISTENT', true),
-            ],
             'service' => [
-                'listKey' => env('REGISTER_CENTER_SERVICE_LIST_KEY', 'phalcon:register:service:list'),
+                'port' => env('THRIFT_SERVICE_PORT', 10086),
+                'config' => [
+                    'pid_file' => ROOT_PATH . '/service.pid',
+                    'daemonize' => false,
+                    'max_request' => 500,
+                ],
             ],
         ],
     ]
