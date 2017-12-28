@@ -23,13 +23,6 @@ class ServiceTask extends Socket
 {
     use Input;
 
-    protected $config = [
-        'pid_file' => ROOT_PATH . '/service.pid',
-        'daemonize' => false,
-        // 'worker_num' => 4, // cpu核数1-4倍比较合理 不写则为cpu核数
-        'max_request' => 500, // 每个worker进程最大处理请求次数
-    ];
-
     protected $port = 10086;
 
     protected $host = '127.0.0.1';
@@ -96,13 +89,13 @@ class ServiceTask extends Socket
     protected function beforeServerStart(swoole_server $server)
     {
         parent::beforeServerStart($server);
-
+        $config = $this->getConfig();
         if ($this->option('daemonize')) {
-            $this->config['daemonize'] = true;
+            $config['daemonize'] = true;
         }
 
         // 重置参数
-        $server->set($this->config);
+        $server->set($config);
 
         $isOpen = di('config')->thrift->register->open;
         if ($isOpen) {
@@ -128,6 +121,15 @@ class ServiceTask extends Socket
         $this->processor->process($protocol, $protocol);
         $server->send($fd, $transport->getBuffer());
         $transport->close();
+    }
+
+    protected function getConfig()
+    {
+        return [
+            'pid_file' => ROOT_PATH . '/service.pid',
+            'daemonize' => false,
+            'max_request' => 500, // 每个worker进程最大处理请求次数
+        ];
     }
 }
 
