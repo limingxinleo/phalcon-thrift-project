@@ -23,6 +23,16 @@ class AppServiceTest extends UnitTestCase
         $this->assertEquals($version, $client->version());
     }
 
+    public function testManyRequestCase()
+    {
+        $client = AppClient::getInstance();
+        $time = time();
+        for ($i = 0; $i < 10000; $i++) {
+            $client->version();
+        }
+        $this->assertTrue(time() - $time < 3);
+    }
+
     public function testExceptionCase()
     {
         try {
