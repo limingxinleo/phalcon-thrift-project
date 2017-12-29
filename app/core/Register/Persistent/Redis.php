@@ -23,5 +23,4 @@ class Redis
 
         return Client::getInstance($host, $auth, $db, $port, 'register');
     }
-
 }

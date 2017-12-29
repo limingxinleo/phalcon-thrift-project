@@ -10,5 +10,4 @@ namespace App\Thrift;
 
 interface ClientInterface
 {
-
 }

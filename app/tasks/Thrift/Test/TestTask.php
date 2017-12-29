@@ -87,6 +87,4 @@ class TestTask extends \Phalcon\Cli\Task
         echo Color::colorize($client->version(), Color::FG_GREEN) . PHP_EOL;
         echo Color::colorize("实例个数：" . count(AppClient::$_instance), Color::FG_GREEN) . PHP_EOL;
     }
-
 }
-

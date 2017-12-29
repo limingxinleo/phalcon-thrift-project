@@ -12,7 +12,6 @@ use Xin\Thrift\Register\ServiceInfo;
 
 class Sign
 {
-
     public static function sign($input = [])
     {
         $config = di('config')->thrift->register;
@@ -27,7 +26,6 @@ class Sign
     {
         $isVerify = di('config')->thrift->register->signVerify;
         if ($isVerify) {
-
             unset($input['sign']);
             return static::sign($input) === $sign;
         }

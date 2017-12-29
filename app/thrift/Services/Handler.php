@@ -12,5 +12,4 @@ use Phalcon\Di\Injectable;
 
 abstract class Handler extends Injectable
 {
-
 }

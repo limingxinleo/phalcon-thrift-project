@@ -50,6 +50,4 @@ class RegisterInput implements JsonSerializable
     {
         return json_encode($this->inputArray);
     }
-
-
 }

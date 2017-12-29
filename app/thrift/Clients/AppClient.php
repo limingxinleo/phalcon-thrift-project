@@ -29,7 +29,4 @@ class AppClient extends Client
     {
         return parent::getInstance($config);
     }
-
-
 }
-

@@ -31,5 +31,4 @@ class InputValidator extends Validator
             )
         );
     }
-
 }

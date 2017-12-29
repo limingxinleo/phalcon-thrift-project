@@ -83,7 +83,6 @@ abstract class Client implements ClientInterface
 
         $class = $this->clientName;
         $this->client = new $class($protocol);
-
     }
 
     public static function getInstance($config = [])
@@ -113,4 +112,3 @@ abstract class Client implements ClientInterface
         return $this->client->$name(...$arguments);
     }
 }
-

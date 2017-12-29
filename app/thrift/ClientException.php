@@ -12,5 +12,4 @@ use Phalcon\Exception;
 
 class ClientException extends Exception
 {
-
 }
