@@ -29,5 +29,4 @@ class IndexController extends Controller
         $this->view->version = System::getInstance()->version();
         return $this->view->render('index', 'index');
     }
-    
 }
